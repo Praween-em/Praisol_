@@ -1,0 +1,54 @@
+service: praisol-backend
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-south-1  # Mumbai — lowest latency for Indian users
+  memorySize: 512
+  timeout: 29         # API Gateway max timeout is 30s
+  environment:
+    DATABASE_URL: ${ssm:/praisol/DATABASE_URL}
+    JWT_ACCESS_SECRET: ${ssm:/praisol/JWT_ACCESS_SECRET}
+    JWT_REFRESH_SECRET: ${ssm:/praisol/JWT_REFRESH_SECRET}
+    JWT_ACCESS_EXPIRES: 15m
+    JWT_REFRESH_EXPIRES: 30d
+    MSG91_AUTH_KEY: ${ssm:/praisol/MSG91_AUTH_KEY}
+    MSG91_TEMPLATE_ID: ${ssm:/praisol/MSG91_TEMPLATE_ID}
+    BUNNY_STORAGE_ZONE: ${ssm:/praisol/BUNNY_STORAGE_ZONE}
+    BUNNY_ACCESS_KEY: ${ssm:/praisol/BUNNY_ACCESS_KEY}
+    BUNNY_CDN_URL: ${ssm:/praisol/BUNNY_CDN_URL}
+    ALLOWED_ORIGINS: "https://praisol.com,https://www.praisol.com"
+    NODE_ENV: production
+
+functions:
+  api:
+    handler: src/lambda.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Tenant-ID
+            allowCredentials: false
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Tenant-ID
+            allowCredentials: false
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 4000
+    noPrependStageInUrl: true
