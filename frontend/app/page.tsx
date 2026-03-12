@@ -13,6 +13,33 @@ export default function Landing() {
 
   return (
     <div style={{ background: 'var(--color-bg)', minHeight: '100vh', color: 'var(--color-text)' }}>
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebApplication',
+            name: 'PraiSol',
+            url: 'https://praisol.com',
+            description:
+              'Create fully functional school, college, and business management websites with our visual builder. No coding needed.',
+            applicationCategory: 'WebApplication',
+            operatingSystem: 'All',
+            offers: {
+              '@type': 'Offer',
+              price: '0',
+              priceCurrency: 'INR',
+              description: 'Free forever plan — 1 website, visual builder, android app builder',
+            },
+            creator: {
+              '@type': 'Organization',
+              name: 'PraiSol',
+              url: 'https://praisol.com',
+            },
+          }),
+        }}
+      />
       {/* Nav */}
       <nav style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
