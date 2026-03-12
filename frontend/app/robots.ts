@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/dashboard/', '/dashboard/deployments/', '/api/'],
       },
     ],
-    sitemap: 'https://praisol.com/sitemap.xml',
+    sitemap: 'https://praisol.online/sitemap.xml',
   };
 }

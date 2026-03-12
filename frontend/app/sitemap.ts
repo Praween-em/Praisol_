@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 
-const BASE_URL = 'https://praisol.com';
+const BASE_URL = 'https://praisol.online';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

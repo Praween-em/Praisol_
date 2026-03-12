@@ -21,7 +21,7 @@ export default function Landing() {
             '@context': 'https://schema.org',
             '@type': 'WebApplication',
             name: 'PraiSol',
-            url: 'https://praisol.com',
+            url: 'https://praisol.online',
             description:
               'Create fully functional school, college, and business management websites with our visual builder. No coding needed.',
             applicationCategory: 'WebApplication',
@@ -35,7 +35,7 @@ export default function Landing() {
             creator: {
               '@type': 'Organization',
               name: 'PraiSol',
-              url: 'https://praisol.com',
+              url: 'https://praisol.online',
             },
           }),
         }}
