@@ -5,6 +5,10 @@ import { NewsFeed } from './sections/NewsFeed';
 import { ProductGrid } from './sections/ProductGrid';
 import { AccordionSection } from './sections/AccordionSection';
 import { Button } from './sections/Button';
+import StatsBar from './sections/StatsBar';
+import PricingSection from './sections/PricingSection';
+import ContactSection from './sections/ContactSection';
+import GalleryGrid from './sections/GalleryGrid';
 
 const COMPONENT_MAP: Record<string, React.FC<any>> = {
   Navbar,
@@ -13,6 +17,10 @@ const COMPONENT_MAP: Record<string, React.FC<any>> = {
   ProductGrid,
   Accordion: AccordionSection,
   Button,
+  StatsBar,
+  PricingSection,
+  ContactSection,
+  GalleryGrid,
 };
 
 interface ComponentRendererProps {

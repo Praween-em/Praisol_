@@ -132,6 +132,81 @@ export const COMPONENT_REGISTRY: Record<string, ComponentRegistryItem> = {
     ],
   },
   
+  // School / College Sections
+  StatsBar: {
+    category: 'Sections',
+    label: 'Statistics Bar',
+    defaultProps: {
+      stats: [
+        { label: 'Students', value: '1000+' },
+        { label: 'Teachers', value: '50+' },
+        { label: 'Years', value: '25' },
+      ],
+      backgroundColor: '#111827',
+      textColor: '#ffffff',
+    },
+    propSchema: [
+      { key: 'stats', label: 'Statistics List', type: 'list' },
+      { key: 'backgroundColor', label: 'Background Color', type: 'color' },
+      { key: 'textColor', label: 'Text Color', type: 'color' },
+    ],
+  },
+
+  GalleryGrid: {
+    category: 'Content',
+    label: 'Image Gallery',
+    defaultProps: {
+      title: 'Our Gallery',
+      images: [
+        { url: '', caption: 'Event 1' },
+        { url: '', caption: 'Event 2' },
+        { url: '', caption: 'Event 3' },
+      ],
+      columns: 3,
+    },
+    propSchema: [
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'images', label: 'Gallery Images', type: 'list' },
+      { key: 'columns', label: 'Columns (Desktop)', type: 'number' },
+    ],
+  },
+
+  // Business / E-commerce
+  PricingSection: {
+    category: 'Sections',
+    label: 'Pricing Tiers',
+    defaultProps: {
+      title: 'Our Plans',
+      plans: [
+        { name: 'Basic', price: '₹0', features: ['Feature 1', 'Feature 2'] },
+        { name: 'Pro', price: '₹999', features: ['All Features', 'Support'], highlight: true },
+      ],
+    },
+    propSchema: [
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'plans', label: 'Pricing Plans', type: 'list' },
+    ],
+  },
+
+  ContactSection: {
+    category: 'Sections',
+    label: 'Contact Info & Form',
+    defaultProps: {
+      title: 'Get in Touch',
+      email: 'contact@example.online',
+      phone: '+91 98765 43210',
+      address: '123 Business Way, City, State',
+      showForm: true,
+    },
+    propSchema: [
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'email', label: 'Email Address', type: 'text' },
+      { key: 'phone', label: 'Phone Number', type: 'text' },
+      { key: 'address', label: 'Physical Address', type: 'text' },
+      { key: 'showForm', label: 'Show Contact Form', type: 'boolean' },
+    ],
+  },
+  
   // Basics / Atomic wrappers for the builder
   Accordion: {
     category: 'Basics',
