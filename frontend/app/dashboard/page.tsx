@@ -103,7 +103,7 @@ export default function Dashboard() {
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.15rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.name}</div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--color-muted)' }}>{d.slug}.praisol.com</div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--color-muted)' }}>{d.slug}.praisol.online</div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.7rem', borderRadius: 999, background: status.bg, color: status.color, fontSize: '0.78rem', fontWeight: 600, flexShrink: 0 }}>
                   {status.icon} {d.status}

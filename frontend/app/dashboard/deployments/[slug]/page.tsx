@@ -22,7 +22,7 @@ export default function DeploymentDetail() {
   }, [slug]);
 
   const copySlug = () => {
-    navigator.clipboard.writeText(`${slug}.praisol.com`);
+    navigator.clipboard.writeText(`${slug}.praisol.online`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -41,7 +41,7 @@ export default function DeploymentDetail() {
   const actions = [
     { href: `/dashboard/deployments/${slug}/builder`, icon: <Palette size={22} />, color: '#6366f1', label: 'Visual Builder', desc: 'Customize your site layout and content' },
     { href: `/dashboard/builds?site=${slug}`, icon: <Smartphone size={22} />, color: '#a855f7', label: 'Android App', desc: 'Build and export your mobile app' },
-    { href: `https://${slug}.praisol.com`, icon: <Globe size={22} />, color: '#22c55e', label: 'View Live Site', desc: 'Open your deployed website', external: true },
+    { href: `https://${slug}.praisol.online`, icon: <Globe size={22} />, color: '#22c55e', label: 'View Live Site', desc: 'Open your deployed website', external: true },
     { href: `/dashboard/deployments/${slug}/settings`, icon: <Settings size={22} />, color: '#f59e0b', label: 'Settings', desc: 'Custom domain, danger zone' },
   ];
 
@@ -57,7 +57,7 @@ export default function DeploymentDetail() {
           <div>
             <h1 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '0.25rem' }}>{deployment.name}</h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span style={{ color: 'var(--color-muted)', fontSize: '0.85rem', fontFamily: 'monospace' }}>{slug}.praisol.com</span>
+              <span style={{ color: 'var(--color-muted)', fontSize: '0.85rem', fontFamily: 'monospace' }}>{slug}.praisol.online</span>
               <button onClick={copySlug} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-muted)', padding: 0 }}>
                 {copied ? <CheckCircle size={14} color="#22c55e" /> : <Copy size={14} />}
               </button>

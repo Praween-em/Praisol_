@@ -17,7 +17,7 @@ provider:
     BUNNY_STORAGE_ZONE: ${ssm:/praisol/BUNNY_STORAGE_ZONE}
     BUNNY_ACCESS_KEY: ${ssm:/praisol/BUNNY_ACCESS_KEY}
     BUNNY_CDN_URL: ${ssm:/praisol/BUNNY_CDN_URL}
-    ALLOWED_ORIGINS: "https://praisol.com,https://www.praisol.com"
+    ALLOWED_ORIGINS: "https://praisol.online,https://www.praisol.online,http://localhost:3000,http://localhost:3001"
     NODE_ENV: production
 
 functions:

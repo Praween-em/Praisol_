@@ -144,7 +144,7 @@ export const DeployModal = ({ onClose, config }: DeployModalProps) => {
               
               <div className="space-y-3">
                 <a 
-                  href={`https://${deployedSlug}.praisol.com`} 
+                  href={`https://${deployedSlug}.praisol.online`} 
                   target="_blank" rel="noreferrer"
                   className="block w-full py-3 bg-zinc-100 text-zinc-900 rounded-xl font-bold transition-all hover:bg-white"
                 >

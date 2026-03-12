@@ -76,7 +76,7 @@ export default function DeploymentsList() {
                       {d.status}
                     </div>
                   </div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--color-muted)', fontFamily: 'monospace' }}>{d.slug}.praisol.com</div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--color-muted)', fontFamily: 'monospace' }}>{d.slug}.praisol.online</div>
                 </div>
                 <div style={{ display: 'flex', gap: '0', borderTop: '1px solid var(--color-border)' }}>
                   <Link href={`/dashboard/deployments/${d.slug}`} style={{ flex: 1, padding: '0.7rem', textAlign: 'center', textDecoration: 'none', color: 'var(--color-text)', fontSize: '0.8rem', fontWeight: 600, borderRight: '1px solid var(--color-border)' }}>
@@ -85,7 +85,7 @@ export default function DeploymentsList() {
                   <Link href={`/dashboard/deployments/${d.slug}/builder`} style={{ flex: 1, padding: '0.7rem', textAlign: 'center', textDecoration: 'none', color: 'var(--color-primary)', fontSize: '0.8rem', fontWeight: 600, borderRight: '1px solid var(--color-border)' }}>
                     Builder
                   </Link>
-                  <a href={`https://${d.slug}.praisol.com`} target="_blank" rel="noreferrer" style={{ padding: '0.7rem 1rem', textDecoration: 'none', color: 'var(--color-muted)', display: 'flex', alignItems: 'center' }}>
+                  <a href={`https://${d.slug}.praisol.online`} target="_blank" rel="noreferrer" style={{ padding: '0.7rem 1rem', textDecoration: 'none', color: 'var(--color-muted)', display: 'flex', alignItems: 'center' }}>
                     <ExternalLink size={14} />
                   </a>
                 </div>
