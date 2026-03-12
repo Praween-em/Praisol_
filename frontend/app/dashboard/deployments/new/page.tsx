@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
-import { School, GraduationCap, Building2, ArrowLeft, Loader2, CheckCircle } from 'lucide-react';
+import { School, GraduationCap, Building2, UserCircle, ArrowLeft, Loader2, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 
 const templates = [
@@ -23,6 +23,14 @@ const templates = [
     features: ['Degree Programs', 'Placements', 'Research', 'Achievements', 'Accreditation', 'Departments'],
   },
   {
+    type: 'portfolio' as const,
+    icon: <UserCircle size={32} />,
+    color: '#06b6d4',
+    title: 'Personal Portfolio',
+    desc: 'Showcase your work and skills. Includes project showcase, experience timeline, skills matrix, services, and testimonials.',
+    features: ['Projects Gallery', 'Experience Timeline', 'Skills Matrix', 'Services', 'Testimonials', 'Blog Sections'],
+  },
+  {
     type: 'business' as const,
     icon: <Building2 size={32} />,
     color: '#ec4899',
@@ -33,7 +41,7 @@ const templates = [
 ];
 
 export default function NewDeployment() {
-  const [selected, setSelected] = useState<'school' | 'college' | 'business' | null>(null);
+  const [selected, setSelected] = useState<'school' | 'college' | 'business' | 'portfolio' | null>(null);
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
