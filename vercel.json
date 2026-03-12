@@ -1,5 +1,11 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/templates", "destination": "/templates" },
+    { "source": "/login", "destination": "/login" },
+    { "source": "/playground", "destination": "/playground" }
+  ]
 }
