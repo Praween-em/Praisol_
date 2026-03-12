@@ -9,6 +9,9 @@ import StatsBar from './sections/StatsBar';
 import PricingSection from './sections/PricingSection';
 import ContactSection from './sections/ContactSection';
 import GalleryGrid from './sections/GalleryGrid';
+import ProjectGrid from './sections/ProjectGrid';
+import ExperienceTimeline from './sections/ExperienceTimeline';
+import SkillMatrix from './sections/SkillMatrix';
 
 const COMPONENT_MAP: Record<string, React.FC<any>> = {
   Navbar,
@@ -21,6 +24,9 @@ const COMPONENT_MAP: Record<string, React.FC<any>> = {
   PricingSection,
   ContactSection,
   GalleryGrid,
+  ProjectGrid,
+  ExperienceTimeline,
+  SkillMatrix,
 };
 
 interface ComponentRendererProps {

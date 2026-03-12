@@ -206,6 +206,57 @@ export const COMPONENT_REGISTRY: Record<string, ComponentRegistryItem> = {
       { key: 'showForm', label: 'Show Contact Form', type: 'boolean' },
     ],
   },
+
+  // Personal Portfolio Sections
+  ProjectGrid: {
+    category: 'Sections',
+    label: 'Portfolio Projects',
+    defaultProps: {
+      title: 'Featured Projects',
+      projects: [
+        { title: 'Project One', desc: 'A revolutionary app.', tags: ['React', 'Next.js'], link: '#', github: '#' },
+        { title: 'Project Two', desc: 'Built for scale.', tags: ['Node.js', 'PostgreSQL'], link: '#', github: '#' },
+      ],
+    },
+    propSchema: [
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'projects', label: 'Projects List', type: 'list' },
+    ],
+  },
+
+  ExperienceTimeline: {
+    category: 'Sections',
+    label: 'Work Experience',
+    defaultProps: {
+      title: 'Professional Journey',
+      items: [
+        { role: 'Senior Developer', company: 'Tech Corp', duration: '2021 - Present', current: true },
+        { role: 'Junior Developer', company: 'StartUp Inc', duration: '2019 - 2021', current: false },
+      ],
+    },
+    propSchema: [
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'items', label: 'Experience Items', type: 'list' },
+    ],
+  },
+
+  SkillMatrix: {
+    category: 'Sections',
+    label: 'Skill Matrix',
+    defaultProps: {
+      title: 'Technical Arsenal',
+      skills: [
+        { name: 'JavaScript', proficiency: 95 },
+        { name: 'React', proficiency: 90 },
+        { name: 'TypeScript', proficiency: 85 },
+        { name: 'Database', proficiency: 80 },
+      ],
+    },
+    propSchema: [
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'skills', label: 'Skills List', type: 'list' },
+    ],
+  },
   
   // Basics / Atomic wrappers for the builder
   Accordion: {
