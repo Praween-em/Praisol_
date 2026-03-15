@@ -1,58 +1,63 @@
 const axios = require('axios');
-const { v4: uuidv4 } = require('uuid');
+
+const fs = require('fs');
 const path = require('path');
 
-const ZONE = process.env.BUNNY_STORAGE_ZONE;
-const KEY = process.env.BUNNY_ACCESS_KEY;
+const STORAGE_ZONE = process.env.BUNNY_STORAGE_ZONE;
+const ACCESS_KEY = process.env.BUNNY_ACCESS_KEY;
 const CDN_URL = process.env.BUNNY_CDN_URL;
-const BASE_URL = `https://storage.bunnycdn.com/${ZONE}`;
+
+// BUNNY_STORAGE_ZONE should be just the zone name, e.g. "praisol" not the full hostname.
+// Build BASE_URL correctly:
+const BASE_URL = `https://storage.bunnycdn.com/${STORAGE_ZONE}`;
+
+const IS_LOCAL_FALLBACK = !STORAGE_ZONE || !ACCESS_KEY || 
+  STORAGE_ZONE.includes('your_') || STORAGE_ZONE.includes('.com');
 
 /**
- * Upload a file buffer to Bunny.net storage.
- * @param {Buffer} buffer - file data
- * @param {string} remotePath - path in storage zone e.g. 'tenants/abc/logo.png'
- * @param {string} contentType - MIME type
- * @returns {string} Public CDN URL
+ * Upload a file buffer to Bunny.net (with local fallback)
  */
-async function uploadFile(buffer, remotePath, contentType = 'application/octet-stream') {
-  await axios.put(`${BASE_URL}/${remotePath}`, buffer, {
+async function uploadFile(fileBuffer, remotePath, contentType = 'application/octet-stream') {
+  if (IS_LOCAL_FALLBACK) {
+    console.log('⚠️ BUNNY_NET credentials missing. Using local fallback for:', remotePath);
+    const localPath = path.join(__dirname, '../../public', remotePath);
+    const localDir = path.dirname(localPath);
+    
+    if (!fs.existsSync(localDir)) {
+      fs.mkdirSync(localDir, { recursive: true });
+    }
+    
+    fs.writeFileSync(localPath, fileBuffer);
+    // Relative URL for local serving
+    return `${process.env.API_URL || 'http://localhost:4000'}/public/${remotePath}`;
+  }
+
+  await axios.put(`${BASE_URL}/${remotePath}`, fileBuffer, {
     headers: {
-      AccessKey: KEY,
+      AccessKey: ACCESS_KEY,
       'Content-Type': contentType,
     },
     maxBodyLength: Infinity,
-    maxContentLength: Infinity,
   });
   return `${CDN_URL}/${remotePath}`;
 }
 
 /**
- * Delete a file from Bunny.net.
+ * Delete a file from Bunny.net
  * @param {string} remotePath - path inside storage zone
  */
 async function deleteFile(remotePath) {
   await axios.delete(`${BASE_URL}/${remotePath}`, {
-    headers: { AccessKey: KEY },
+    headers: { AccessKey: ACCESS_KEY },
   });
 }
 
 /**
- * Generate a remote file path for a tenant upload.
- * @param {string} deploymentId
- * @param {string} folder - e.g. 'news', 'products', 'logos'
- * @param {string} originalName - original filename (extension extracted)
- * @returns {string} e.g. 'tenants/uuid/news/uuid.jpg'
- */
-function buildRemotePath(deploymentId, folder, originalName) {
-  const ext = path.extname(originalName).toLowerCase();
-  return `tenants/${deploymentId}/${folder}/${uuidv4()}${ext}`;
-}
-
-/**
- * Extract the storage path from a CDN URL.
+ * Extract remote path from a CDN URL
+ * e.g. "https://cdn.b-cdn.net/tenants/abc/img.jpg" → "tenants/abc/img.jpg"
  */
 function getRemotePath(cdnUrl) {
   return cdnUrl.replace(`${CDN_URL}/`, '');
 }
 
-module.exports = { uploadFile, deleteFile, buildRemotePath, getRemotePath };
+module.exports = { uploadFile, deleteFile, getRemotePath };

@@ -1,9 +1,10 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { COMPONENT_REGISTRY } from '@/lib/builder/registry';
 import { Input } from './atoms/Input';
 import { Checkbox } from './atoms/Checkbox';
-import { X, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import { X, Trash2, ArrowUp, ArrowDown, Image as ImageIcon, Settings2, Move, ChevronDown, ChevronRight } from 'lucide-react';
+import api from '@/lib/api';
 
 interface PropertyPanelProps {
   selectedId: string | null;
@@ -13,6 +14,51 @@ interface PropertyPanelProps {
   onDelete: (id: string) => void;
   onMove: (id: string, dir: 'up' | 'down') => void;
   onClose: () => void;
+}
+
+// Collapsible section wrapper
+function Section({ title, icon, children, defaultOpen = true }: { title: string; icon?: React.ReactNode; children: React.ReactNode; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: open ? '1.25rem' : 0 }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          width: '100%', display: 'flex', alignItems: 'center', gap: '0.5rem',
+          padding: '0.85rem 0', background: 'none', border: 'none', cursor: 'pointer',
+          color: '#a1a1aa', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase'
+        }}
+      >
+        {icon && <span style={{ opacity: 0.7 }}>{icon}</span>}
+        <span style={{ flex: 1, textAlign: 'left' }}>{title}</span>
+        {open ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+      </button>
+      {open && <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>{children}</div>}
+    </div>
+  );
+}
+
+// Simple friendly slider+number combo
+function SpacingControl({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+      <label style={{ color: '#71717a', fontSize: '0.72rem', fontWeight: 600, minWidth: 80 }}>{label}</label>
+      <input
+        type="range" min={0} max={120} step={4}
+        value={value}
+        onChange={e => onChange(Number(e.target.value))}
+        style={{ flex: 1, accentColor: '#6366f1', cursor: 'pointer' }}
+      />
+      <div style={{
+        background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: 6, padding: '0.2rem 0.4rem', display: 'flex', alignItems: 'center', gap: '0.2rem',
+        minWidth: 44
+      }}>
+        <span style={{ color: '#e4e4e7', fontSize: '0.8rem', fontWeight: 700, minWidth: 24, textAlign: 'right' }}>{value}</span>
+        <span style={{ color: '#52525b', fontSize: '0.65rem' }}>px</span>
+      </div>
+    </div>
+  );
 }
 
 export const PropertyPanel = ({
@@ -27,13 +73,22 @@ export const PropertyPanel = ({
   const component = components.find(c => c.id === selectedId);
   
   if (!component) return (
-    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-zinc-500">
-      <p className="text-sm">Select a component on the canvas to edit its properties.</p>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '2rem', textAlign: 'center', gap: '1rem' }}>
+      <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(99,102,241,0.08)', border: '1.5px solid rgba(99,102,241,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Settings2 size={22} style={{ color: '#6366f1', opacity: 0.7 }} />
+      </div>
+      <p style={{ color: '#52525b', fontSize: '0.85rem', lineHeight: 1.6 }}>Select a component on the canvas to edit its properties.</p>
     </div>
   );
 
   const registryItem = COMPONENT_REGISTRY[component.type];
   if (!registryItem) return null;
+
+  // Spacing state — stored directly in props
+  const spc = component.props._spacing || { marginTop: 0, marginBottom: 0, paddingLeft: 0, paddingRight: 0 };
+  const handleSpacing = (key: string, val: number) => {
+    onUpdate(component.id, { _spacing: { ...spc, [key]: val } });
+  };
 
   const handleChange = (key: string, value: any) => {
     onUpdate(component.id, { [key]: value });
@@ -58,185 +113,260 @@ export const PropertyPanel = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-zinc-950">
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#0a0a0f' }}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-zinc-800">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,0.07)', background: 'rgba(99,102,241,0.05)' }}>
         <div>
-          <h3 className="text-sm font-bold text-zinc-100">{registryItem.label}</h3>
-          <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">{component.id.split('-')[0]}</p>
+          <h3 style={{ color: '#e4e4e7', fontWeight: 800, fontSize: '0.9rem', margin: 0 }}>{registryItem.label}</h3>
+          <p style={{ color: '#6366f1', fontSize: '0.65rem', fontWeight: 700, margin: '0.2rem 0 0', letterSpacing: '0.12em', textTransform: 'uppercase' }}>{component.type}</p>
         </div>
-        <button onClick={onClose} className="text-zinc-500 hover:text-zinc-100">
+        <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#52525b', padding: '0.25rem' }}>
           <X size={18} />
         </button>
       </div>
 
-      {/* Toolbar */}
-      <div className="flex items-center gap-1 p-2 border-b border-zinc-900 bg-zinc-900/30">
-        <button onClick={() => onMove(component.id, 'up')} className="p-1.5 hover:bg-zinc-800 rounded text-zinc-400">
-          <ArrowUp size={16} />
+      {/* Quick Actions */}
+      <div style={{ display: 'flex', gap: '0.5rem', padding: '0.75rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <button onClick={() => onMove(component.id, 'up')} title="Move Up" style={{ flex: 1, padding: '0.5rem', borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', color: '#a1a1aa', cursor: 'pointer', fontSize: '0.7rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+          <ArrowUp size={13} /> Up
         </button>
-        <button onClick={() => onMove(component.id, 'down')} className="p-1.5 hover:bg-zinc-800 rounded text-zinc-400">
-          <ArrowDown size={16} />
+        <button onClick={() => onMove(component.id, 'down')} title="Move Down" style={{ flex: 1, padding: '0.5rem', borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', color: '#a1a1aa', cursor: 'pointer', fontSize: '0.7rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+          <ArrowDown size={13} /> Down
         </button>
-        <div className="flex-1" />
-        <button onClick={() => onDelete(component.id)} className="p-1.5 hover:bg-red-900/30 rounded text-red-500">
-          <Trash2 size={16} />
+        <button onClick={() => onDelete(component.id)} title="Delete" style={{ flex: 1, padding: '0.5rem', borderRadius: 8, background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.15)', color: '#f87171', cursor: 'pointer', fontSize: '0.7rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+          <Trash2 size={13} /> Delete
         </button>
       </div>
 
-      {/* Inputs */}
-      <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-6">
-        {registryItem.propSchema.map(field => {
-          const value = component.props[field.key];
+      {/* Scrollable body */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 1.25rem' }}>
 
-          return (
-            <div key={field.key}>
-              {field.type === 'text' && (
-                <div className="space-y-2">
-                  <Input 
-                    label={field.label}
-                    value={value || ''}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(field.key, e.target.value)}
-                  />
-                  {(field.key === 'link' || field.key.includes('Link') || field.key.includes('href')) && (
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Link to Internal Page</label>
-                      <select 
-                        className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-xs text-zinc-400 outline-none"
-                        onChange={(e) => handleChange(field.key, e.target.value)}
-                        value={value}
-                      >
-                        <option value="">-- Select Page --</option>
-                        {pages.map(p => (
-                          <option key={p.id} value={`/${p.id}`}>{p.label}</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                </div>
-              )}
+        {/* SPACING — Universal for every component */}
+        <Section title="Spacing" icon={<Move size={12} />} defaultOpen={true}>
+          <p style={{ color: '#3f3f46', fontSize: '0.7rem', margin: '0 0 0.5rem' }}>Control the outer space around this component.</p>
+          <SpacingControl label="Top margin" value={spc.marginTop} onChange={v => handleSpacing('marginTop', v)} />
+          <SpacingControl label="Bottom margin" value={spc.marginBottom} onChange={v => handleSpacing('marginBottom', v)} />
+          <SpacingControl label="Left padding" value={spc.paddingLeft} onChange={v => handleSpacing('paddingLeft', v)} />
+          <SpacingControl label="Right padding" value={spc.paddingRight} onChange={v => handleSpacing('paddingRight', v)} />
+        </Section>
 
-              {field.type === 'number' && (
-                <Input 
-                  type="number"
-                  label={field.label}
-                  value={value || 0}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(field.key, parseInt(e.target.value))}
-                />
-              )}
+        {/* CONTENT — component-specific props */}
+        <Section title="Content" icon={<Settings2 size={12} />} defaultOpen={true}>
+          {registryItem.propSchema.map(field => {
+            const value = component.props[field.key];
 
-              {field.type === 'boolean' && (
-                <Checkbox 
-                  label={field.label}
-                  checked={!!value}
-                  onChange={e => handleChange(field.key, e.target.checked)}
-                />
-              )}
-
-              {field.type === 'color' && (
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{field.label}</label>
-                  <div className="flex gap-3">
-                    <input 
-                      type="color"
-                      value={value || '#000000'}
+            return (
+              <div key={field.key}>
+                {field.type === 'text' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <Input
+                      label={field.label}
+                      value={value || ''}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(field.key, e.target.value)}
-                      className="w-10 h-10 rounded bg-transparent border-none cursor-pointer"
                     />
-                    <input 
-                      type="text"
-                      value={value || '#000000'}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(field.key, e.target.value)}
-                      className="flex-1 bg-zinc-900 border border-zinc-800 rounded px-3 text-sm text-zinc-300"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {field.type === 'select' && (
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{field.label}</label>
-                  <select 
-                    value={value || ''}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleChange(field.key, e.target.value)}
-                    className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-300 outline-none focus:border-indigo-500"
-                  >
-                    {field.options?.map(opt => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {field.type === 'image' && (
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{field.label}</label>
-                  <div className="flex flex-col gap-2">
-                    {value && (
-                      <div className="aspect-video rounded-lg overflow-hidden border border-zinc-800">
-                        <img src={value} alt="Preview" className="w-full h-full object-cover" />
+                    {(field.key === 'link' || field.key.includes('Link') || field.key.includes('href')) && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                        <label style={{ color: '#52525b', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Link to Page</label>
+                        <select
+                          style={{ background: '#18181b', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, padding: '0.5rem 0.75rem', color: '#a1a1aa', fontSize: '0.8rem', outline: 'none' }}
+                          onChange={(e) => handleChange(field.key, e.target.value)}
+                          value={value}
+                        >
+                          <option value="">— Select internal page —</option>
+                          {pages.map(p => (
+                            <option key={p.id} value={`/${p.id}`}>{p.label}</option>
+                          ))}
+                        </select>
                       </div>
                     )}
-                    <Input 
-                      placeholder="Paste Image URL"
+                  </div>
+                )}
+
+                {field.type === 'number' && (
+                  <Input
+                    type="number"
+                    label={field.label}
+                    value={value || 0}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(field.key, parseInt(e.target.value))}
+                  />
+                )}
+
+                {field.type === 'boolean' && (
+                  <Checkbox
+                    label={field.label}
+                    checked={!!value}
+                    onChange={e => handleChange(field.key, e.target.checked)}
+                  />
+                )}
+
+                {field.type === 'color' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    <label style={{ color: '#71717a', fontSize: '0.72rem', fontWeight: 600 }}>{field.label}</label>
+                    <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                      <input
+                        type="color"
+                        value={value || '#000000'}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(field.key, e.target.value)}
+                        style={{ width: 40, height: 36, borderRadius: 8, border: '1.5px solid rgba(255,255,255,0.08)', cursor: 'pointer', background: 'transparent', padding: '2px' }}
+                      />
+                      <input
+                        type="text"
+                        value={value || '#000000'}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(field.key, e.target.value)}
+                        style={{ flex: 1, background: '#18181b', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, padding: '0.4rem 0.65rem', color: '#e4e4e7', fontSize: '0.82rem', outline: 'none', fontFamily: 'monospace' }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {field.type === 'select' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    <label style={{ color: '#71717a', fontSize: '0.72rem', fontWeight: 600 }}>{field.label}</label>
+                    <select
+                      value={value || ''}
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleChange(field.key, e.target.value)}
+                      style={{ background: '#18181b', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, padding: '0.5rem 0.75rem', color: '#e4e4e7', fontSize: '0.82rem', outline: 'none', cursor: 'pointer' }}
+                    >
+                      {field.options?.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {field.type === 'image' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <label style={{ color: '#71717a', fontSize: '0.72rem', fontWeight: 600 }}>{field.label}</label>
+                    {value && (
+                      <div style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.07)', aspectRatio: '16/9', background: '#18181b' }}>
+                        <img src={value} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <button
+                          onClick={() => handleChange(field.key, '')}
+                          style={{ position: 'absolute', top: 6, right: 6, background: 'rgba(17,17,17,0.85)', border: 'none', borderRadius: 6, padding: '0.25rem 0.5rem', color: '#f87171', cursor: 'pointer', fontSize: '0.7rem' }}
+                        >
+                          ✕ Remove
+                        </button>
+                      </div>
+                    )}
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <div style={{ position: 'relative', flex: 1 }}>
+                        <input
+                          type="file"
+                          id={`upload-${field.key}`}
+                          style={{ display: 'none' }}
+                          accept="image/*"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const formData = new FormData();
+                            formData.append('file', file);
+                            try {
+                              const response = await api.post('/platform/upload/image', formData, {
+                                headers: { 'Content-Type': 'multipart/form-data' },
+                                timeout: 60000,
+                              });
+                              if (response.data.success) {
+                                handleChange(field.key, response.data.data.url);
+                              }
+                            } catch (err: any) {
+                              const msg = err.response?.data?.message || err.message || 'Unknown error';
+                              alert(`Upload failed: ${msg}`);
+                            }
+                          }}
+                        />
+                        <button
+                          onClick={() => document.getElementById(`upload-${field.key}`)?.click()}
+                          style={{ width: '100%', padding: '0.55rem', borderRadius: 8, background: '#4f46e5', border: 'none', color: '#fff', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}
+                        >
+                          <ImageIcon size={13} /> Upload Image
+                        </button>
+                      </div>
+                    </div>
+                    <Input
+                      placeholder="Or paste image URL..."
                       value={value || ''}
                       onChange={e => handleChange(field.key, e.target.value)}
                     />
-                    <p className="text-[10px] text-zinc-500 italic">Pro-tip: Upload images to Bunny.net and paste the URL here.</p>
                   </div>
-                </div>
-              )}
+                )}
 
-              {field.type === 'list' && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{field.label}</label>
-                    <button 
-                      onClick={() => addListItem(field.key)}
-                      className="text-[10px] font-bold text-indigo-400 hover:text-indigo-300 uppercase tracking-widest"
-                    >
-                      + Add Item
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    {Array.isArray(value) && value.map((item: any, idx: number) => (
-                      <div key={idx} className="p-3 bg-zinc-900/50 rounded-xl border border-zinc-800 space-y-3 relative group/item">
-                        <button 
-                          onClick={() => removeListItem(field.key, idx)}
-                          className="absolute top-2 right-2 text-zinc-600 hover:text-red-500 opacity-0 group-hover/item:opacity-100 transition-opacity"
-                        >
-                          <Trash2 size={12} />
-                        </button>
-                        <Input 
-                          label="Label"
-                          value={item.label || ''}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleListItemChange(field.key, idx, 'label', e.target.value)}
-                        />
-                        <div className="space-y-1.5">
-                          <Input 
-                            label="URL / Page Href"
-                            value={item.href || ''}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleListItemChange(field.key, idx, 'href', e.target.value)}
-                          />
-                          <select 
-                            className="w-full bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-[10px] text-zinc-400 outline-none"
-                            onChange={(e) => handleListItemChange(field.key, idx, 'href', e.target.value)}
-                            value={item.href || ''}
+                {field.type === 'list' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <label style={{ color: '#71717a', fontSize: '0.72rem', fontWeight: 600 }}>{field.label}</label>
+                      <button
+                        onClick={() => addListItem(field.key)}
+                        style={{ background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.25)', borderRadius: 6, padding: '0.2rem 0.6rem', color: '#818cf8', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 700 }}
+                      >
+                        + Add
+                      </button>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      {Array.isArray(value) && value.map((item: any, idx: number) => (
+                        <div key={idx} style={{ padding: '0.75rem', background: 'rgba(255,255,255,0.03)', borderRadius: 10, border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: '0.5rem', position: 'relative' }}>
+                          <button
+                            onClick={() => removeListItem(field.key, idx)}
+                            style={{ position: 'absolute', top: 6, right: 6, background: 'none', border: 'none', cursor: 'pointer', color: '#52525b', padding: '0.15rem' }}
                           >
-                            <option value="">-- Link to Page --</option>
-                            {pages.map(p => (
-                              <option key={p.id} value={`/${p.id}`}>Page: {p.label}</option>
-                            ))}
-                          </select>
+                            <X size={12} />
+                          </button>
+                          {typeof item === 'string' ? (
+                            <input
+                              value={item}
+                              onChange={e => {
+                                const list = [...(component.props[field.key] || [])];
+                                list[idx] = e.target.value;
+                                handleChange(field.key, list);
+                              }}
+                              style={{ background: '#18181b', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 7, padding: '0.4rem 0.65rem', color: '#e4e4e7', fontSize: '0.82rem', outline: 'none', width: '100%', boxSizing: 'border-box' }}
+                              placeholder={`Item ${idx + 1}`}
+                            />
+                          ) : (
+                            Object.keys(item).filter(k => k !== 'href').map(k => (
+                              <div key={k}>
+                                <label style={{ color: '#52525b', fontSize: '0.65rem', fontWeight: 600, textTransform: 'capitalize' }}>{k}</label>
+                                <input
+                                  value={item[k] || ''}
+                                  onChange={e => handleListItemChange(field.key, idx, k, e.target.value)}
+                                  style={{ display: 'block', width: '100%', boxSizing: 'border-box', background: '#18181b', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 7, padding: '0.35rem 0.65rem', color: '#e4e4e7', fontSize: '0.8rem', marginTop: '0.2rem', outline: 'none' }}
+                                  placeholder={k}
+                                />
+                              </div>
+                            ))
+                          )}
+                          {'href' in item && (
+                            <div>
+                              <label style={{ color: '#52525b', fontSize: '0.65rem', fontWeight: 600 }}>Link URL</label>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', marginTop: '0.2rem' }}>
+                                <input
+                                  value={item.href || ''}
+                                  onChange={e => handleListItemChange(field.key, idx, 'href', e.target.value)}
+                                  style={{ width: '100%', boxSizing: 'border-box', background: '#18181b', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 7, padding: '0.35rem 0.65rem', color: '#e4e4e7', fontSize: '0.8rem', outline: 'none' }}
+                                  placeholder="https://..."
+                                />
+                                <select
+                                  style={{ background: '#18181b', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 7, padding: '0.35rem 0.65rem', color: '#71717a', fontSize: '0.75rem', outline: 'none' }}
+                                  onChange={e => handleListItemChange(field.key, idx, 'href', e.target.value)}
+                                  value={item.href || ''}
+                                >
+                                  <option value="">— Link to internal page —</option>
+                                  {pages.map(p => (
+                                    <option key={p.id} value={`/${p.id}`}>{p.label}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
+                )}
+              </div>
+            );
+          })}
+        </Section>
+
       </div>
     </div>
   );

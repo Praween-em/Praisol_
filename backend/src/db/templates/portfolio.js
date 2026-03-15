@@ -109,6 +109,16 @@ module.exports = (schema) => `
     created_at   TIMESTAMPTZ DEFAULT NOW()
   );
 
+  -- Form submissions from deployed site visitors
+  CREATE TABLE IF NOT EXISTS form_submissions (
+    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    form_id      VARCHAR(100),
+    form_title   VARCHAR(200) DEFAULT 'Form',
+    data         JSONB NOT NULL DEFAULT '{}',
+    is_read      BOOLEAN DEFAULT FALSE,
+    submitted_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
   -- Seed default settings
   INSERT INTO site_settings (site_name) VALUES ('My Portfolio');
 `;

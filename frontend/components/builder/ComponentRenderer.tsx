@@ -12,6 +12,32 @@ import GalleryGrid from './sections/GalleryGrid';
 import ProjectGrid from './sections/ProjectGrid';
 import ExperienceTimeline from './sections/ExperienceTimeline';
 import SkillMatrix from './sections/SkillMatrix';
+import Section from './sections/Section';
+import Container from './sections/Container';
+import Grid from './sections/Grid';
+import Column from './sections/Column';
+import Spacer from './sections/Spacer';
+import Heading from './sections/Heading';
+import Paragraph from './sections/Paragraph';
+import List from './sections/List';
+import ImageComponent from './sections/Image';
+import Icon from './sections/Icon';
+import Tabs from './sections/Tabs';
+import Modal from './sections/Modal';
+import Form from './sections/Form';
+import { FormInput, FormSelect, FormCheckbox, FormSubmit } from './sections/FormElements';
+import Card from './sections/Card';
+import PricingCard from './sections/PricingCard';
+import BlogCard from './sections/BlogCard';
+import Testimonial from './sections/Testimonial';
+import FAQ from './sections/FAQ';
+import HeroTemplate from './sections/HeroTemplate';
+import TeamGrid from './sections/TeamGrid';
+import VideoEmbed from './sections/VideoEmbed';
+import StatsCounter from './sections/StatsCounter';
+import Banner from './sections/Banner';
+import LogoCarousel from './sections/LogoCarousel';
+import Footer from './sections/Footer';
 
 const COMPONENT_MAP: Record<string, React.FC<any>> = {
   Navbar,
@@ -27,14 +53,45 @@ const COMPONENT_MAP: Record<string, React.FC<any>> = {
   ProjectGrid,
   ExperienceTimeline,
   SkillMatrix,
+  Section,
+  Container,
+  Grid,
+  Column,
+  Spacer,
+  Heading,
+  Paragraph,
+  List,
+  Image: ImageComponent,
+  Icon,
+  Tabs,
+  Modal,
+  Form,
+  Input: FormInput,
+  Select: FormSelect,
+  Checkbox: FormCheckbox,
+  Submit: FormSubmit,
+  Card,
+  PricingCard,
+  BlogCard,
+  Testimonial,
+  FAQ,
+  HeroTemplate,
+  TeamGrid,
+  VideoEmbed,
+  StatsCounter,
+  Banner,
+  LogoCarousel,
+  Footer,
 };
 
 interface ComponentRendererProps {
   type: string;
   props: any;
+  /** Passed on deployed tenant sites so Form can POST to the backend */
+  tenantSlug?: string;
 }
 
-export const ComponentRenderer = ({ type, props }: ComponentRendererProps) => {
+export const ComponentRenderer = ({ type, props, tenantSlug }: ComponentRendererProps) => {
   const Component = COMPONENT_MAP[type];
 
   if (!Component) {
@@ -45,5 +102,8 @@ export const ComponentRenderer = ({ type, props }: ComponentRendererProps) => {
     );
   }
 
-  return <Component {...props} />;
+  // Pass tenantSlug and componentId only to Form so it can submit to the backend
+  const extraProps = type === 'Form' ? { tenantSlug, componentId: props.id } : {};
+
+  return <Component {...props} {...extraProps} />;
 };

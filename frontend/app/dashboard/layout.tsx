@@ -6,7 +6,7 @@ import { getUser, logout, isLoggedIn } from '@/lib/auth';
 import { User } from '@/types';
 import {
   Layers, LayoutDashboard, Globe, Smartphone,
-  CreditCard, LogOut, Menu, X, ChevronRight
+  CreditCard, LogOut, Menu, X, ChevronRight, UserCircle
 } from 'lucide-react';
 
 const navItems = [
@@ -14,6 +14,7 @@ const navItems = [
   { href: '/dashboard/deployments', label: 'My Sites', icon: Globe },
   { href: '/dashboard/builds', label: 'App Builds', icon: Smartphone },
   { href: '/dashboard/billing', label: 'Billing', icon: CreditCard },
+  { href: '/dashboard/profile', label: 'Profile', icon: UserCircle },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -37,11 +38,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const sidebar = (
     <aside style={sidebarStyle}>
       <div style={{ padding: '1.25rem 1.25rem 0' }}>
-        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem' }}>
-          <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg, #6366f1, #a855f7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Layers size={17} color="#fff" />
-          </div>
-          <span style={{ fontWeight: 700, color: 'var(--color-text)', fontSize: '1rem' }}>PraiSol</span>
+        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '2.5rem' }}>
+          <img src="/logo.png" alt="PraiSol Logo" style={{ width: 32, height: 32, objectFit: 'contain' }} />
+          <span style={{ fontWeight: 700, color: 'var(--color-text)', fontSize: '1.1rem' }}>PraiSol</span>
         </Link>
 
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
@@ -68,10 +67,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* User area */}
       <div style={{ marginTop: 'auto', padding: '1.25rem', borderTop: '1px solid var(--color-border)' }}>
         {user && (
-          <div style={{ marginBottom: '0.75rem' }}>
-            <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.1rem' }}>{user.name || 'User'}</div>
+          <Link href="/dashboard/profile" style={{ textDecoration: 'none', display: 'block', marginBottom: '0.75rem' }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
+            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
+            <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.1rem', color: 'var(--color-text)' }}>{user.name || 'Set your name'}</div>
             <div style={{ color: 'var(--color-muted)', fontSize: '0.8rem' }}>+91 {user.phone}</div>
-          </div>
+          </Link>
         )}
         <button onClick={logout} style={{
           width: '100%', display: 'flex', alignItems: 'center', gap: '0.6rem',
@@ -102,10 +103,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Mobile top bar */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.25rem', borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface)' }}>
           <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{ width: 28, height: 28, borderRadius: 7, background: 'linear-gradient(135deg, #6366f1, #a855f7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Layers size={15} color="#fff" />
-            </div>
-            <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>PraiSol</span>
+            <img src="/logo.png" alt="PraiSol Logo" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+            <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>PraiSol</span>
           </Link>
           <button onClick={() => setSidebarOpen(!sidebarOpen)} style={{ background: 'none', border: 'none', color: 'var(--color-text)', cursor: 'pointer' }}>
             {sidebarOpen ? <X size={22} /> : <Menu size={22} />}

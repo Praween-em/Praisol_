@@ -51,10 +51,18 @@ export const Canvas = ({
 
         {components.map((comp) => {
           const isSelected = selectedId === comp.id;
+          const spc = comp.props._spacing || {};
+          const spacingStyle = {
+            marginTop: spc.marginTop ? `${spc.marginTop}px` : undefined,
+            marginBottom: spc.marginBottom ? `${spc.marginBottom}px` : undefined,
+            paddingLeft: spc.paddingLeft ? `${spc.paddingLeft}px` : undefined,
+            paddingRight: spc.paddingRight ? `${spc.paddingRight}px` : undefined,
+          };
           
           return (
             <div
               key={comp.id}
+              style={spacingStyle}
               onClick={(e) => {
                 if (preview) return;
                 e.stopPropagation();

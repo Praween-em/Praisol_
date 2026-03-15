@@ -157,7 +157,7 @@ export default function BuilderPage() {
             <div className="flex-1 overflow-y-auto p-3 custom-scrollbar">
               {activeTab === 'components' ? (
                 <div className="space-y-6">
-                  {['Sections', 'Content', 'E-commerce', 'Basics'].map((cat) => (
+                  {['Layout', 'Content', 'Interactive', 'Sections', 'E-commerce', 'Basics'].map((cat) => (
                     <div key={cat}>
                       <h3 className="text-[10px] font-bold text-zinc-600 uppercase mb-3 px-2">{cat}</h3>
                       <div className="grid grid-cols-1 gap-1">

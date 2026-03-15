@@ -102,7 +102,14 @@ export default function Dashboard() {
                   {systemIcons[d.system_type]}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.15rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.name}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                    <div style={{ fontWeight: 600, fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.name}</div>
+                    {(d.unread_submissions ?? 0) > 0 && (
+                      <span style={{ background: '#ef4444', color: '#fff', borderRadius: 999, fontSize: '0.65rem', fontWeight: 700, padding: '1px 6px', flexShrink: 0 }}>
+                        {d.unread_submissions} NEW
+                      </span>
+                    )}
+                  </div>
                   <div style={{ fontSize: '0.78rem', color: 'var(--color-muted)' }}>{d.slug}.praisol.online</div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.7rem', borderRadius: 999, background: status.bg, color: status.color, fontSize: '0.78rem', fontWeight: 600, flexShrink: 0 }}>

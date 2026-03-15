@@ -2,8 +2,9 @@
 import Link from 'next/link';
 import { 
   School, GraduationCap, Building2, UserCircle, 
-  ArrowRight, CheckCircle, Layers, Zap
+  ArrowRight, CheckCircle, Zap
 } from 'lucide-react';
+import { Navbar } from '@/components/Navbar';
 
 const templates = [
   {
@@ -43,30 +44,7 @@ const templates = [
 export default function TemplatesPage() {
   return (
     <div style={{ background: 'var(--color-bg)', minHeight: '100vh', color: 'var(--color-text)' }}>
-      {/* Nav */}
-      <nav style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '1rem 2rem', borderBottom: '1px solid var(--color-border)',
-        position: 'sticky', top: 0, backdropFilter: 'blur(20px)',
-        background: 'rgba(9,9,11,0.85)', zIndex: 50
-      }}>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', color: '#fff' }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: 8,
-            background: 'linear-gradient(135deg, #6366f1, #a855f7)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center'
-          }}>
-            <Layers size={18} color="#fff" />
-          </div>
-          <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>PraiSol</span>
-        </Link>
-        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <Link href="/playground" style={{
-            background: 'var(--color-primary)', color: '#fff', padding: '0.45rem 1.1rem',
-            borderRadius: 8, textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600
-          }}>Get Started Free</Link>
-        </div>
-      </nav>
+      <Navbar />
 
       <section style={{ padding: '5rem 2rem', maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>

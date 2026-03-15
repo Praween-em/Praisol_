@@ -8,13 +8,254 @@ export interface PropSchemaItem {
 }
 
 export interface ComponentRegistryItem {
-  category: 'Sections' | 'Content' | 'E-commerce' | 'Basics';
+  category: 'Layout' | 'Content' | 'Interactive' | 'Sections' | 'E-commerce' | 'Basics';
   label: string;
   defaultProps: Record<string, any>;
   propSchema: PropSchemaItem[];
 }
 
 export const COMPONENT_REGISTRY: Record<string, ComponentRegistryItem> = {
+  // Layout Group
+  Section: {
+    category: 'Layout',
+    label: 'Section Wrapper',
+    defaultProps: { backgroundColor: 'transparent', paddingTop: '4rem', paddingBottom: '4rem' },
+    propSchema: [
+      { key: 'backgroundColor', label: 'Background Color', type: 'color' },
+      { key: 'paddingTop', label: 'Padding Top', type: 'text' },
+      { key: 'paddingBottom', label: 'Padding Bottom', type: 'text' },
+    ],
+  },
+  Container: {
+    category: 'Layout',
+    label: 'Max-Width Container',
+    defaultProps: { maxWidth: '1200px', centered: true },
+    propSchema: [
+      { key: 'maxWidth', label: 'Max Width', type: 'text' },
+      { key: 'centered', label: 'Center Container', type: 'boolean' },
+    ],
+  },
+  Grid: {
+    category: 'Layout',
+    label: 'Responsive Grid',
+    defaultProps: { columns: 3, gap: '1.5rem', responsive: true },
+    propSchema: [
+      { key: 'columns', label: 'Grid Columns', type: 'number' },
+      { key: 'gap', label: 'Gap Spacing', type: 'text' },
+      { key: 'responsive', label: 'Responsive Auto-fit', type: 'boolean' },
+    ],
+  },
+  Column: {
+    category: 'Layout',
+    label: 'Grid Column',
+    defaultProps: { span: 1, flex: '1' },
+    propSchema: [
+      { key: 'span', label: 'Column Span', type: 'number' },
+      { key: 'flex', label: 'Flex Grow', type: 'text' },
+    ],
+  },
+  Spacer: {
+    category: 'Layout',
+    label: 'Whitespace Spacer',
+    defaultProps: { height: '2rem', width: '100%' },
+    propSchema: [
+      { key: 'height', label: 'Height', type: 'text' },
+      { key: 'width', label: 'Width', type: 'text' },
+    ],
+  },
+
+  // Content Group
+  Heading: {
+    category: 'Content',
+    label: 'Typography: Heading',
+    defaultProps: { text: 'Your Heading', level: 2, align: 'left', color: '#ffffff', marginBottom: '1rem' },
+    propSchema: [
+      { key: 'text', label: 'Text', type: 'text' },
+      { key: 'level', label: 'Level (H1-H6)', type: 'number' },
+      { key: 'align', label: 'Alignment', type: 'select', options: [
+        { label: 'Left', value: 'left' }, { label: 'Center', value: 'center' }, { label: 'Right', value: 'right' }
+      ]},
+      { key: 'color', label: 'Text Color', type: 'color' },
+      { key: 'marginBottom', label: 'Margin Bottom', type: 'text' },
+    ],
+  },
+  Paragraph: {
+    category: 'Content',
+    label: 'Typography: Paragraph',
+    defaultProps: { text: 'Your paragraph text goes here.', align: 'left', color: '#a1a1aa', fontSize: '1.1rem' },
+    propSchema: [
+      { key: 'text', label: 'Content', type: 'text' },
+      { key: 'align', label: 'Alignment', type: 'select', options: [
+        { label: 'Left', value: 'left' }, { label: 'Center', value: 'center' }, { label: 'Right', value: 'right' }
+      ]},
+      { key: 'color', label: 'Text Color', type: 'color' },
+      { key: 'fontSize', label: 'Font Size', type: 'text' },
+    ],
+  },
+  List: {
+    category: 'Content',
+    label: 'Typography: List',
+    defaultProps: { items: ['Item 1', 'Item 2', 'Item 3'], type: 'bullet', color: '#a1a1aa' },
+    propSchema: [
+      { key: 'items', label: 'List Items', type: 'list' },
+      { key: 'type', label: 'List Type', type: 'select', options: [
+        { label: 'Bullet', value: 'bullet' }, { label: 'Ordered', value: 'ordered' }, { label: 'Checkmark', value: 'check' }
+      ]},
+      { key: 'color', label: 'Text Color', type: 'color' },
+    ],
+  },
+  Image: {
+    category: 'Content',
+    label: 'Media: Image',
+    defaultProps: { src: '', alt: 'Image', width: '100%', height: 'auto', borderRadius: '12px' },
+    propSchema: [
+      { key: 'src', label: 'Image URL', type: 'image' },
+      { key: 'alt', label: 'Alt Text', type: 'text' },
+      { key: 'width', label: 'Width', type: 'text' },
+      { key: 'height', label: 'Height', type: 'text' },
+      { key: 'borderRadius', label: 'Rounded Corners', type: 'text' },
+    ],
+  },
+  Icon: {
+    category: 'Content',
+    label: 'Media: Icon',
+    defaultProps: { iconName: 'Star', size: 24, color: '#6366f1' },
+    propSchema: [
+      { key: 'iconName', label: 'Lucide Icon Name', type: 'text' },
+      { key: 'size', label: 'Icon Size (px)', type: 'number' },
+      { key: 'color', label: 'Icon Color', type: 'color' },
+    ],
+  },
+
+  // Interactive Group
+  Tabs: {
+    category: 'Interactive',
+    label: 'Interactive: Tabs',
+    defaultProps: { tabStyle: 'underline', activeColor: '#6366f1' },
+    propSchema: [
+      { key: 'items', label: 'Tabs (Label/Content)', type: 'list' },
+      { key: 'tabStyle', label: 'Style', type: 'select', options: [{label: 'Underline', value: 'underline'}, {label: 'Pills', value: 'pills'}] },
+      { key: 'activeColor', label: 'Active Color', type: 'color' },
+    ],
+  },
+  Modal: {
+    category: 'Interactive',
+    label: 'Interactive: Modal',
+    defaultProps: { triggerText: 'Open Modal', title: 'Modal Title', buttonVariant: 'primary' },
+    propSchema: [
+      { key: 'triggerText', label: 'Trigger Button Text', type: 'text' },
+      { key: 'title', label: 'Modal Title', type: 'text' },
+      { key: 'content', label: 'Modal Content', type: 'text' },
+      { key: 'buttonVariant', label: 'Button Style', type: 'select', options: [{label: 'Primary', value: 'primary'}, {label: 'Secondary', value: 'secondary'}, {label: 'Outline', value: 'outline'}] },
+    ],
+  },
+  Form: {
+    category: 'Interactive',
+    label: 'Interactive: Full Form',
+    defaultProps: { title: 'Contact Us', description: 'Enter details below', buttonLabel: 'Send' },
+    propSchema: [
+      { key: 'title', label: 'Form Title', type: 'text' },
+      { key: 'description', label: 'Form Description', type: 'text' },
+      { key: 'buttonLabel', label: 'Submit Button Label', type: 'text' },
+      { key: 'backgroundColor', label: 'Background Color', type: 'color' },
+    ],
+  },
+
+  // Forms Category (Individual Elements)
+  Input: {
+    category: 'Basics', // Using Basics for form elements
+    label: 'Form: Input',
+    defaultProps: { label: 'Label', placeholder: 'Enter text...', type: 'text' },
+    propSchema: [
+      { key: 'label', label: 'Label', type: 'text' },
+      { key: 'placeholder', label: 'Placeholder', type: 'text' },
+      { key: 'type', label: 'HTML Type', type: 'select', options: [{label: 'Text', value: 'text'}, {label: 'Email', value: 'email'}, {label: 'Number', value: 'number'}] },
+    ],
+  },
+  Checkbox: {
+    category: 'Basics',
+    label: 'Form: Checkbox',
+    defaultProps: { label: 'Check this box' },
+    propSchema: [{ key: 'label', label: 'Label', type: 'text' }],
+  },
+  Submit: {
+    category: 'Basics',
+    label: 'Form: Submit Button',
+    defaultProps: { label: 'Submit', width: 'w-full' },
+    propSchema: [
+      { key: 'label', label: 'Label', type: 'text' },
+      { key: 'width', label: 'Width (Tailwind)', type: 'text' },
+    ],
+  },
+
+  // Advanced Group
+  Card: {
+    category: 'Basics',
+    label: 'Layout: Card',
+    defaultProps: { padding: '1.5rem', backgroundColor: '#18181b', borderRadius: '16px', hoverEffect: true },
+    propSchema: [
+      { key: 'padding', label: 'Padding', type: 'text' },
+      { key: 'backgroundColor', label: 'Background Color', type: 'color' },
+      { key: 'borderRadius', label: 'Border Radius', type: 'text' },
+      { key: 'hoverEffect', label: 'Enable Hover Effect', type: 'boolean' },
+    ],
+  },
+  PricingCard: {
+    category: 'Sections',
+    label: 'Advanced: Pricing Card',
+    defaultProps: { plan: 'Pro', price: '$49', isPopular: true, features: ['Unlimited Sites', '24/7 Support', 'Custom Domain'] },
+    propSchema: [
+      { key: 'plan', label: 'Plan Name', type: 'text' },
+      { key: 'price', label: 'Price', type: 'text' },
+      { key: 'features', label: 'Features', type: 'list' },
+      { key: 'isPopular', label: 'Popular Badge', type: 'boolean' },
+      { key: 'accentColor', label: 'Accent Color', type: 'color' },
+    ],
+  },
+  BlogCard: {
+    category: 'Sections',
+    label: 'Advanced: Blog Card',
+    defaultProps: { title: 'Modern Web Design', author: 'Admin', category: 'Design' },
+    propSchema: [
+      { key: 'title', label: 'Headline', type: 'text' },
+      { key: 'excerpt', label: 'Excerpt', type: 'text' },
+      { key: 'image', label: 'Thumbnail URL', type: 'image' },
+      { key: 'category', label: 'Category', type: 'text' },
+    ],
+  },
+  Testimonial: {
+    category: 'Sections',
+    label: 'Advanced: Testimonial',
+    defaultProps: { author: 'Jane Cooper', role: 'Designer', quote: 'This builder is amazing!' },
+    propSchema: [
+      { key: 'author', label: 'Author Name', type: 'text' },
+      { key: 'role', label: 'Role/Company', type: 'text' },
+      { key: 'quote', label: 'Testimonial Text', type: 'text' },
+      { key: 'avatar', label: 'Avatar URL', type: 'image' },
+      { key: 'backgroundColor', label: 'Background Color', type: 'color' },
+    ],
+  },
+  FAQ: {
+    category: 'Sections',
+    label: 'Advanced: FAQ',
+    defaultProps: { items: [{question: 'Custom Q?', answer: 'Your custom answer here'}] },
+    propSchema: [
+      { key: 'items', label: 'Questions & Answers', type: 'list' },
+    ],
+  },
+  HeroTemplate: {
+    category: 'Sections',
+    label: 'Advanced: Hero Layout',
+    defaultProps: { title: 'Hero Headline', alignment: 'left' },
+    propSchema: [
+      { key: 'title', label: 'Headline', type: 'text' },
+      { key: 'description', label: 'Description', type: 'text' },
+      { key: 'image', label: 'Hero Image', type: 'image' },
+      { key: 'badge', label: 'Badge Text', type: 'text' },
+      { key: 'alignment', label: 'Alignment', type: 'select', options: [{label: 'Left', value: 'left'}, {label: 'Center', value: 'center'}] },
+    ],
+  },
+
   // Global / Layout
   Navbar: {
     category: 'Sections',
@@ -271,5 +512,136 @@ export const COMPONENT_REGISTRY: Record<string, ComponentRegistryItem> = {
     propSchema: [
       { key: 'title', label: 'Section Title', type: 'text' },
     ],
-  }
+  },
+
+  // --- NEW COMPONENTS ---
+  TeamGrid: {
+    category: 'Sections',
+    label: 'Team Members Grid',
+    defaultProps: {
+      title: 'Meet Our Team',
+      subtitle: 'The talented people behind the scenes.',
+      members: [
+        { name: 'Aarav Sharma', role: 'Founder & CEO', bio: 'Visionary leader.' },
+        { name: 'Priya Mehta', role: 'CTO', bio: 'Platform architect.' },
+        { name: 'Rohan Singh', role: 'Designer', bio: 'UX craftsman.' },
+      ],
+      columns: 3,
+      accentColor: '#6366f1',
+    },
+    propSchema: [
+      { key: 'title', label: 'Section Title', type: 'text' },
+      { key: 'subtitle', label: 'Subtitle', type: 'text' },
+      { key: 'members', label: 'Team Members', type: 'list' },
+      { key: 'columns', label: 'Columns', type: 'number' },
+      { key: 'accentColor', label: 'Accent Color', type: 'color' },
+    ],
+  },
+
+  VideoEmbed: {
+    category: 'Content',
+    label: 'Video Embed (YouTube/Vimeo)',
+    defaultProps: {
+      title: 'Watch Our Story',
+      videoUrl: '',
+      aspectRatio: '16/9',
+      showCaption: true,
+      caption: 'See how we are changing education.',
+      accentColor: '#6366f1',
+    },
+    propSchema: [
+      { key: 'title', label: 'Section Title', type: 'text' },
+      { key: 'videoUrl', label: 'Video URL (YouTube / Vimeo)', type: 'text' },
+      { key: 'showCaption', label: 'Show Caption', type: 'boolean' },
+      { key: 'caption', label: 'Caption Text', type: 'text' },
+      { key: 'accentColor', label: 'Border Glow Color', type: 'color' },
+    ],
+  },
+
+  StatsCounter: {
+    category: 'Sections',
+    label: 'Stats / Counters',
+    defaultProps: {
+      title: 'By the Numbers',
+      subtitle: 'Our impact in numbers',
+      stats: [
+        { label: 'Students', value: '5,000+', icon: '🎓' },
+        { label: 'Teachers', value: '150+', icon: '👩‍🏫' },
+        { label: 'Years', value: '25', icon: '🏆' },
+        { label: 'Alumni', value: '20,000+', icon: '🌐' },
+      ],
+      layout: 'row',
+      accentColor: '#6366f1',
+      backgroundColor: 'transparent',
+    },
+    propSchema: [
+      { key: 'title', label: 'Section Title', type: 'text' },
+      { key: 'subtitle', label: 'Subtitle', type: 'text' },
+      { key: 'stats', label: 'Stats List', type: 'list' },
+      { key: 'layout', label: 'Layout', type: 'select', options: [{ label: 'Row', value: 'row' }, { label: 'Grid', value: 'grid' }] },
+      { key: 'accentColor', label: 'Accent Color', type: 'color' },
+      { key: 'backgroundColor', label: 'Background', type: 'color' },
+    ],
+  },
+
+  Banner: {
+    category: 'Sections',
+    label: 'Announcement Banner',
+    defaultProps: {
+      text: '🚀 New session starting January 2025 — Limited seats!',
+      subtext: '',
+      ctaLabel: 'Apply Now',
+      ctaLink: '#',
+      backgroundColor: '#4f46e5',
+      textColor: '#ffffff',
+      accentColor: '#ffffff',
+    },
+    propSchema: [
+      { key: 'text', label: 'Banner Message', type: 'text' },
+      { key: 'subtext', label: 'Sub-text', type: 'text' },
+      { key: 'ctaLabel', label: 'CTA Button Label', type: 'text' },
+      { key: 'ctaLink', label: 'CTA Link', type: 'text' },
+      { key: 'backgroundColor', label: 'Background Color', type: 'color' },
+      { key: 'textColor', label: 'Text Color', type: 'color' },
+    ],
+  },
+
+  LogoCarousel: {
+    category: 'Sections',
+    label: 'Logo Carousel / Trusted By',
+    defaultProps: {
+      title: 'Trusted By',
+      logos: [
+        { name: 'Partner One' },
+        { name: 'Partner Two' },
+        { name: 'Partner Three' },
+        { name: 'Partner Four' },
+      ],
+      backgroundColor: 'transparent',
+    },
+    propSchema: [
+      { key: 'title', label: 'Section Label', type: 'text' },
+      { key: 'logos', label: 'Partner Logos', type: 'list' },
+      { key: 'backgroundColor', label: 'Background', type: 'color' },
+    ],
+  },
+
+  Footer: {
+    category: 'Sections',
+    label: 'Site Footer',
+    defaultProps: {
+      brandName: 'PraiSol',
+      tagline: 'Building the future, one site at a time.',
+      copyrightText: `© ${new Date().getFullYear()} PraiSol. All rights reserved.`,
+      backgroundColor: '#09090b',
+      accentColor: '#6366f1',
+    },
+    propSchema: [
+      { key: 'brandName', label: 'Brand Name', type: 'text' },
+      { key: 'tagline', label: 'Tagline', type: 'text' },
+      { key: 'copyrightText', label: 'Copyright Text', type: 'text' },
+      { key: 'backgroundColor', label: 'Background Color', type: 'color' },
+      { key: 'accentColor', label: 'Accent Color', type: 'color' },
+    ],
+  },
 };

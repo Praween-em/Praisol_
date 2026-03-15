@@ -38,4 +38,7 @@ router.use('/orders', require('./business/orders'));
 router.use('/announcements', require('./business/announcements'));
 router.use('/testimonials', require('./business/testimonials'));
 
+// Common to all — form submissions inbox
+router.use('/form-submissions', require('./form-submissions'));
+
 module.exports = router;

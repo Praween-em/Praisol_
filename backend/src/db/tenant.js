@@ -1,4 +1,4 @@
-const { pool } = require('../index');
+const { pool } = require('./index');
 
 /**
  * Create an isolated tenant schema and run the system-type SQL template.
@@ -51,7 +51,10 @@ function getTenantDB(schemaName) {
       const client = await pool.connect();
       try {
         await client.query(`SET search_path TO "${schemaName}", public`);
-        return await client.query(sql, params);
+        const result = await client.query(sql, params);
+        // Reset search_path before releasing back to pool
+        await client.query(`SET search_path TO public`);
+        return result;
       } finally {
         client.release();
       }
@@ -64,7 +67,8 @@ function getTenantDB(schemaName) {
       const client = await pool.connect();
       try {
         await client.query('BEGIN');
-        await client.query(`SET search_path TO "${schemaName}", public`);
+        // Use SET LOCAL for transactions so it auto-resets on COMMIT/ROLLBACK
+        await client.query(`SET LOCAL search_path TO "${schemaName}", public`);
         const result = await fn(client);
         await client.query('COMMIT');
         return result;

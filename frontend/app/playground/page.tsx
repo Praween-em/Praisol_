@@ -9,7 +9,7 @@ import { PropertyPanel } from '@/components/builder/PropertyPanel';
 import { isLoggedIn } from '@/lib/auth';
 import { 
   ArrowLeft, Rocket, Globe, Smartphone, Monitor, Save,
-  Box, Loader2, Info, Trash2
+  Box, Loader2, Info, Trash2, Menu, X
 } from 'lucide-react';
 import { DeployModal } from '@/components/builder/DeployModal';
 
@@ -20,6 +20,7 @@ export default function PlaygroundPage() {
   const [deployModalOpen, setDeployModalOpen] = useState(false);
   const [viewDevice, setViewDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [previewMode, setPreviewMode] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const { 
     config, 
@@ -81,16 +82,23 @@ export default function PlaygroundPage() {
   return (
     <div className="h-screen flex flex-col bg-zinc-950 overflow-hidden text-zinc-100">
       {/* Top Bar */}
-      <header className="h-14 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-md flex items-center justify-between px-4 z-50 shrink-0">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="p-2 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-zinc-100 transition-colors">
-            <ArrowLeft size={18} />
+      <header className="h-14 lg:h-16 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-md flex items-center justify-between px-4 z-50 shrink-0">
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <img 
+              src="/logo.png" 
+              alt="PraiSol Logo" 
+              className="w-7 h-7 object-contain" 
+            />
+            <span className="hidden sm:inline font-bold text-sm tracking-tight text-white">
+              PraiSol
+            </span>
           </Link>
-          <div className="h-6 w-[1px] bg-zinc-800" />
+          <div className="h-4 w-[1px] bg-zinc-800 hidden sm:block" />
           <div className="flex items-center gap-2">
-            <span className="bg-indigo-500/10 text-indigo-400 text-[10px] font-bold px-1.5 py-0.5 rounded border border-indigo-500/20 uppercase tracking-wider">Playground</span>
+            <span className="bg-indigo-500/10 text-indigo-400 text-[9px] font-bold px-1.5 py-0.5 rounded border border-indigo-500/20 uppercase tracking-wider">Playground</span>
             <select 
-              className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-xs font-bold text-zinc-400 outline-none hover:text-white cursor-pointer ml-1"
+              className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-[11px] font-bold text-zinc-400 outline-none hover:text-white cursor-pointer"
               value={activePageId}
               onChange={(e) => setActivePageId(e.target.value)}
             >
@@ -101,41 +109,75 @@ export default function PlaygroundPage() {
           </div>
         </div>
 
-        {/* Device Toggles */}
-        <div className="flex items-center bg-zinc-800/50 p-1 rounded-lg border border-zinc-700/50">
-          <button 
-            onClick={() => { setViewDevice('desktop'); setPreviewMode(false); }}
-            className={`p-1.5 rounded-md transition-all ${viewDevice === 'desktop' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-zinc-500 hover:text-zinc-300'}`}
-          >
-            <Monitor size={16} />
-          </button>
-          <button 
-            onClick={() => { setViewDevice('mobile'); setPreviewMode(false); }}
-            className={`p-1.5 rounded-md transition-all ${viewDevice === 'mobile' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-zinc-500 hover:text-zinc-300'}`}
-          >
-            <Smartphone size={16} />
-          </button>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="hidden lg:flex items-center gap-2 text-xs text-zinc-500 mr-2">
-            <Info size={14} /> Local Auto-save enabled
+        {/* Desktop Controls */}
+        <div className="hidden md:flex items-center gap-4">
+          <div className="flex items-center bg-zinc-800/50 p-1 rounded-lg border border-zinc-700/50">
+            <button 
+              onClick={() => { setViewDevice('desktop'); setPreviewMode(false); }}
+              className={`p-1.5 rounded-md transition-all ${viewDevice === 'desktop' ? 'bg-indigo-600 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+            >
+              <Monitor size={14} />
+            </button>
+            <button 
+              onClick={() => { setViewDevice('mobile'); setPreviewMode(false); }}
+              className={`p-1.5 rounded-md transition-all ${viewDevice === 'mobile' ? 'bg-indigo-600 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+            >
+              <Smartphone size={14} />
+            </button>
           </div>
           <button 
             onClick={() => setPreviewMode(!previewMode)}
-            className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold transition-all border ${previewMode ? 'bg-zinc-100 text-zinc-900 border-zinc-100' : 'text-zinc-400 border-zinc-700 hover:border-zinc-500'}`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${previewMode ? 'bg-zinc-100 text-zinc-900 border-zinc-100' : 'text-zinc-400 border-zinc-700 hover:border-zinc-500'}`}
           >
-            <Globe size={16} />
-            {previewMode ? 'Exit Preview' : 'Live Preview'}
+            <Globe size={14} />
+            {previewMode ? 'Exit' : 'Preview'}
           </button>
           <button 
             onClick={handleDeploy}
-            className="flex items-center gap-2 px-6 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg text-sm font-bold transition-all shadow-lg shadow-indigo-500/20"
+            className="flex items-center gap-2 px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition-all shadow-lg shadow-indigo-500/20"
           >
-            <Rocket size={16} />
+            <Rocket size={14} />
             Deploy Now
           </button>
         </div>
+
+        {/* Mobile Right Controls */}
+        <div className="flex md:hidden items-center gap-2">
+          <button 
+            onClick={handleDeploy}
+            className="p-2 bg-indigo-600 text-white rounded-lg shadow-lg shadow-indigo-500/20"
+          >
+            <Rocket size={16} />
+          </button>
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 text-zinc-400 hover:text-white"
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+
+        {/* Mobile Dropdown */}
+        {mobileMenuOpen && (
+          <div className="absolute top-full left-0 right-0 bg-zinc-900 border-b border-zinc-800 p-4 space-y-4 md:hidden animate-in slide-in-from-top duration-200">
+            <div className="flex items-center justify-between p-2 bg-zinc-800 rounded-lg">
+              <span className="text-xs font-semibold text-zinc-400">Device View</span>
+              <div className="flex gap-2">
+                <button onClick={() => { setViewDevice('desktop'); setMobileMenuOpen(false); }} className={`p-2 rounded ${viewDevice === 'desktop' ? 'bg-indigo-600' : 'bg-zinc-700'}`}><Monitor size={14} /></button>
+                <button onClick={() => { setViewDevice('mobile'); setMobileMenuOpen(false); }} className={`p-2 rounded ${viewDevice === 'mobile' ? 'bg-indigo-600' : 'bg-zinc-700'}`}><Smartphone size={14} /></button>
+              </div>
+            </div>
+            <button 
+               onClick={() => { setPreviewMode(!previewMode); setMobileMenuOpen(false); }}
+               className="w-full flex items-center justify-between p-3 bg-zinc-800 rounded-lg text-sm font-semibold"
+            >
+              <span>{previewMode ? 'Exit Preview' : 'Live Preview'}</span>
+              <Globe size={16} />
+            </button>
+            <Link href="/templates" className="block p-3 text-sm font-semibold text-zinc-300">Templates</Link>
+            {!isLoggedIn() && <Link href="/login" className="block p-3 text-sm font-semibold text-zinc-300">Sign In</Link>}
+          </div>
+        )}
       </header>
 
       <div className="flex-1 flex overflow-hidden">

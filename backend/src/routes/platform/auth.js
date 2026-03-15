@@ -20,16 +20,35 @@ router.post('/send-otp', otpRateLimiter, async (req, res, next) => {
 // POST /api/platform/auth/verify-otp
 router.post('/verify-otp', async (req, res, next) => {
   try {
-    const { phone, otp, name } = req.body;
-    if (!phone || !otp) return badRequest(res, 'Phone and OTP are required');
+    const { phone: reqPhone, otp, token, name } = req.body;
+    let verifiedIdentifier;
 
-    const valid = await verifyOTP(phone, otp);
-    if (!valid) return badRequest(res, 'Invalid or expired OTP');
+    if (token) {
+      // Logged in via MSG91 Hello Widget
+      const tokenString = typeof token === 'object' ? token.message : token;
+      
+      try {
+        const verificationData = await require('../../services/otp').verifyWidgetToken(tokenString);
+        const mobile = verificationData.mobile;
+        // MSG91 mobile comes with country code, e.g. "919876543210"
+        verifiedIdentifier = mobile.startsWith('91') ? mobile.slice(2) : mobile;
+      } catch (err) {
+        console.error('MSG91 Verification Failed:', err.message);
+        return res.status(401).json({ success: false, message: err.message });
+      }
+    } else if (reqPhone && otp) {
+      // Legacy / Fallback OTP verification
+      const valid = await verifyOTP(reqPhone, otp);
+      if (!valid) return badRequest(res, 'Invalid or expired OTP');
+      verifiedIdentifier = reqPhone;
+    } else {
+      return badRequest(res, 'Verification token or Phone/OTP required');
+    }
 
     // Find or create platform user
     const existing = await pool.query(
       `SELECT id, name, phone, is_verified FROM platform_users WHERE phone = $1`,
-      [phone]
+      [verifiedIdentifier]
     );
 
     let user;
@@ -42,14 +61,17 @@ router.post('/verify-otp', async (req, res, next) => {
     } else {
       const result = await pool.query(
         `INSERT INTO platform_users (phone, name, is_verified) VALUES ($1, $2, TRUE) RETURNING id, name, phone`,
-        [phone, name || null]
+        [verifiedIdentifier, name || null]
       );
       user = result.rows[0];
     }
 
     const tokens = generateTokens({ id: user.id, phone: user.phone, type: 'platform' });
     ok(res, { user, ...tokens });
-  } catch (e) { next(e); }
+  } catch (e) { 
+    console.error('Verify Token Error:', e.message);
+    next(e); 
+  }
 });
 
 // POST /api/platform/auth/refresh
@@ -73,6 +95,24 @@ router.get('/me', require('../../middleware/auth'), async (req, res, next) => {
     const { rows } = await pool.query(
       `SELECT id, name, phone, email, avatar_url, created_at FROM platform_users WHERE id = $1`,
       [req.user.id]
+    );
+    if (!rows[0]) return require('../../utils/response').notFound(res, 'User not found');
+    ok(res, rows[0]);
+  } catch (e) { next(e); }
+});
+
+// PUT /api/platform/auth/me — update profile (name, email)
+router.put('/me', require('../../middleware/auth'), async (req, res, next) => {
+  try {
+    const { name, email } = req.body;
+    if (!name?.trim()) return badRequest(res, 'Name is required');
+
+    const { rows } = await pool.query(
+      `UPDATE platform_users
+       SET name = $1, email = $2, updated_at = NOW()
+       WHERE id = $3
+       RETURNING id, name, phone, email, avatar_url, created_at`,
+      [name.trim(), email?.trim() || null, req.user.id]
     );
     if (!rows[0]) return require('../../utils/response').notFound(res, 'User not found');
     ok(res, rows[0]);

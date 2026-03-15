@@ -6,8 +6,8 @@
  * @param {string[]} fields - fields to allow in INSERT/UPDATE
  * @param {string} [orderBy='created_at DESC'] - ORDER BY clause
  */
-const { getTenantDB } = require('../../../db/tenant');
-const { ok, created, notFound, badRequest } = require('../../../utils/response');
+const { getTenantDB } = require('../../db/tenant');
+const { ok, created, notFound, badRequest } = require('../../utils/response');
 
 function makeCRUD(tableName, fields, orderBy = 'created_at DESC') {
   const router = require('express').Router();

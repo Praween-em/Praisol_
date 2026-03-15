@@ -17,6 +17,7 @@ export interface Deployment {
   slug: string;
   schema_name: string;
   status: 'building' | 'active' | 'suspended' | 'deleted';
+  unread_submissions?: number;
   custom_domain: string | null;
   builder_config: Record<string, unknown>;
   created_at: string;

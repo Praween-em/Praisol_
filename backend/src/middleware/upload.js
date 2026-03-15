@@ -1,19 +1,12 @@
 const multer = require('multer');
 
-const ALLOWED_MIME_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/gif',
-  'application/pdf',
-];
-
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
   fileFilter: (req, file, cb) => {
-    if (ALLOWED_MIME_TYPES.includes(file.mimetype)) cb(null, true);
-    else cb(new Error('File type not allowed. Use JPEG, PNG, WebP, or PDF.'), false);
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/svg+xml'];
+    if (allowedTypes.includes(file.mimetype)) cb(null, true);
+    else cb(new Error('File type not allowed. Only JPG, PNG, WEBP and SVG are permitted.'), false);
   },
 });
 

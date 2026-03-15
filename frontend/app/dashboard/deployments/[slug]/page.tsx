@@ -4,13 +4,14 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { Deployment } from '@/types';
-import { ArrowLeft, Palette, Smartphone, Globe, Settings, Loader2, CheckCircle, Copy } from 'lucide-react';
+import { ArrowLeft, Palette, Smartphone, Globe, Settings, Loader2, CheckCircle, Copy, Inbox } from 'lucide-react';
 
 export default function DeploymentDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [deployment, setDeployment] = useState<Deployment | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     api.get('/platform/deployments')
@@ -19,6 +20,11 @@ export default function DeploymentDetail() {
         setDeployment(found || null);
       })
       .finally(() => setLoading(false));
+
+    // Fetch unread form submission count for this tenant
+    api.get('/admin/form-submissions/unread-count', {
+      headers: { 'X-Tenant-ID': slug }
+    }).then(r => setUnreadCount(r.data.data?.count || 0)).catch(() => {});
   }, [slug]);
 
   const copySlug = () => {
@@ -41,8 +47,25 @@ export default function DeploymentDetail() {
   const actions = [
     { href: `/dashboard/deployments/${slug}/builder`, icon: <Palette size={22} />, color: '#6366f1', label: 'Visual Builder', desc: 'Customize your site layout and content' },
     { href: `/dashboard/builds?site=${slug}`, icon: <Smartphone size={22} />, color: '#a855f7', label: 'Android App', desc: 'Build and export your mobile app' },
-    { href: `https://${slug}.praisol.online`, icon: <Globe size={22} />, color: '#22c55e', label: 'View Live Site', desc: 'Open your deployed website', external: true },
-    { href: `/dashboard/deployments/${slug}/settings`, icon: <Settings size={22} />, color: '#f59e0b', label: 'Settings', desc: 'Custom domain, danger zone' },
+    { 
+      href: process.env.NODE_ENV === 'development' 
+        ? `http://${slug}.localhost:3000` 
+        : `https://${slug}.praisol.online`, 
+      icon: <Globe size={22} />, 
+      color: '#22c55e', 
+      label: 'View Live Site', 
+      desc: 'Open your deployed website', 
+      external: true 
+    },
+    { 
+      href: `/dashboard/deployments/${slug}/submissions`, 
+      icon: <Inbox size={22} />, 
+      color: '#f59e0b', 
+      label: 'Form Submissions', 
+      desc: 'View contact & inquiry messages',
+      badge: unreadCount > 0 ? unreadCount : undefined
+    },
+    { href: `/dashboard/deployments/${slug}/settings`, icon: <Settings size={22} />, color: '#64748b', label: 'Settings', desc: 'Custom domain, danger zone' },
   ];
 
   return (
@@ -80,14 +103,21 @@ export default function DeploymentDetail() {
       {/* Action Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
         {actions.map(a => (
-          <a key={a.label} href={a.href} target={a.external ? '_blank' : undefined} rel={a.external ? 'noreferrer' : undefined}
+          <a key={a.label} href={a.href} target={(a as any).external ? '_blank' : undefined} rel={(a as any).external ? 'noreferrer' : undefined}
             style={{
               borderRadius: 14, padding: '1.25rem', textDecoration: 'none', display: 'block',
               border: '1px solid var(--color-border)', background: 'var(--color-surface)',
-              transition: 'all 0.2s', cursor: 'pointer'
+              transition: 'all 0.2s', cursor: 'pointer', position: 'relative'
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = a.color; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--color-border)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}>
+              {(a as any).badge != null && (
+                <span style={{
+                  position: 'absolute', top: 12, right: 12,
+                  background: '#ef4444', color: '#fff', borderRadius: 999,
+                  fontSize: '0.7rem', fontWeight: 700, padding: '1px 7px', lineHeight: '18px'
+                }}>{(a as any).badge}</span>
+              )}
               <div style={{ width: 44, height: 44, borderRadius: 12, background: `${a.color}18`, border: `1px solid ${a.color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: a.color, marginBottom: '0.75rem' }}>
                 {a.icon}
               </div>

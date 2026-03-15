@@ -64,9 +64,7 @@ function VerifyContent() {
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <Link href="/" style={{ textDecoration: 'none' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, #6366f1, #a855f7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Layers size={22} color="#fff" />
-              </div>
+              <img src="/logo.png" alt="PraiSol Logo" style={{ width: 40, height: 40, objectFit: 'contain' }} />
             </div>
           </Link>
           <h1 style={{ marginTop: '1.5rem', fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.4rem' }}>Verify your number</h1>

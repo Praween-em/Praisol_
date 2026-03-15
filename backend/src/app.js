@@ -11,16 +11,41 @@ const adminRoutes = require('./routes/admin');
 const publicRoutes = require('./routes/public');
 
 const app = express();
+const path = require('path');
+
+// Request logger
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+  next();
+});
+
+// Serve static files (for local upload fallback)
+app.use('/public', express.static(path.join(__dirname, '../public')));
 
 // Security headers
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
 
 // CORS
 app.use(cors({
   origin: (origin, callback) => {
+    // allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    // In development, allow ANY origin (for testing on local network/IPs)
+    if (process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+
     const allowed = (process.env.ALLOWED_ORIGINS || '').split(',');
-    if (!origin || allowed.includes(origin)) callback(null, true);
-    else callback(new Error('Not allowed by CORS'));
+    if (allowed.some(a => a.trim() === origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`[CORS] Rejected origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
   },
   credentials: true,
 }));
@@ -39,6 +64,26 @@ app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().
 app.use('/api/platform', platformRoutes);
 app.use('/api/admin', adminRoutes);     // tenantMiddleware + authMiddleware inside
 app.use('/api/public', publicRoutes);   // tenantMiddleware inside, no auth
+
+// Public: resolve a custom domain to a deployment slug (used by Next.js middleware)
+// GET /resolve-domain?host=www.mysite.com
+app.get('/resolve-domain', async (req, res) => {
+  try {
+    const { pool } = require('./db');
+    const host = (req.query.host || '').toLowerCase().replace(/^https?:\/\//, '').split('/')[0];
+    if (!host) return res.status(400).json({ success: false, message: 'host query param required' });
+
+    const { rows } = await pool.query(
+      `SELECT slug FROM public.deployments
+       WHERE LOWER(custom_domain) = $1 AND status NOT IN ('deleted') LIMIT 1`,
+      [host]
+    );
+    if (!rows[0]) return res.status(404).json({ success: false, message: 'Domain not mapped' });
+    res.json({ success: true, slug: rows[0].slug });
+  } catch (e) {
+    res.status(500).json({ success: false, message: 'Internal error' });
+  }
+});
 
 // 404
 app.use((req, res) => res.status(404).json({ success: false, message: 'Route not found' }));

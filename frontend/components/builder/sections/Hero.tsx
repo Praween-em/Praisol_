@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import Link from 'next/link';
 import { Button } from '../atoms/Button';
 
 export interface HeroProps {
@@ -8,6 +9,8 @@ export interface HeroProps {
   backgroundImage?: string;
   ctaText?: string;
   ctaLink?: string;
+  secondaryCtaText?: string;
+  secondaryCtaLink?: string;
 }
 
 export const Hero = ({
@@ -16,6 +19,8 @@ export const Hero = ({
   backgroundImage = '',
   ctaText = 'Apply Now',
   ctaLink = '#',
+  secondaryCtaText = 'Learn More',
+  secondaryCtaLink = '#',
 }: HeroProps) => {
   return (
     <section className="relative min-h-[500px] flex items-center px-6 py-20 overflow-hidden bg-zinc-950">
@@ -38,12 +43,16 @@ export const Hero = ({
           {subtitle}
         </p>
         <div className="flex flex-wrap justify-center gap-4 animate-fade-up" style={{ animationDelay: '0.2s' }}>
-          <Button size="lg" className="px-10">
-            {ctaText}
-          </Button>
-          <Button variant="outline" size="lg" className="px-10">
-            Learn More
-          </Button>
+          <Link href={ctaLink || '#'}>
+            <Button size="lg" className="px-10">
+              {ctaText}
+            </Button>
+          </Link>
+          <Link href={secondaryCtaLink || '#'}>
+            <Button variant="outline" size="lg" className="px-10">
+              {secondaryCtaText}
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

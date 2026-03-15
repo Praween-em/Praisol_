@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { pool } = require('../../db');
 const tenantMiddleware = require('../../middleware/tenant');
 const { getTenantDB } = require('../../db/tenant');
 const { ok, notFound, badRequest } = require('../../utils/response');
@@ -267,6 +268,43 @@ router.get('/testimonials', async (req, res, next) => {
     const db = getTenantDB(req.schemaName);
     const { rows } = await db.query(`SELECT * FROM testimonials WHERE is_visible=TRUE ORDER BY created_at DESC`);
     ok(res, rows);
+  } catch (e) { next(e); }
+});
+
+// GET /api/public/site-config — fetch visual builder config + site meta (no auth)
+router.get('/site-config', async (req, res, next) => {
+  try {
+    const { rows: siteRows } = await pool.query(
+      `SELECT system_type, name as site_name, builder_config FROM public.deployments WHERE slug = $1 LIMIT 1`,
+      [req.tenant.slug]
+    );
+    
+    if (!siteRows[0]) return notFound(res, 'Site config not found');
+    
+    ok(res, {
+      system_type: siteRows[0].system_type,
+      site_name: siteRows[0].site_name,
+      builder_config: typeof siteRows[0].builder_config === 'string' 
+        ? JSON.parse(siteRows[0].builder_config) 
+        : siteRows[0].builder_config
+    });
+  } catch (e) { next(e); }
+});
+
+// POST /api/public/form-submissions — visitor submits a form (no auth)
+router.post('/form-submissions', async (req, res, next) => {
+  try {
+    const { form_id, form_title, data } = req.body;
+    if (!data || typeof data !== 'object' || Array.isArray(data))
+      return badRequest(res, 'Submission data must be a non-empty object');
+
+    const db = getTenantDB(req.schemaName);
+    const { rows } = await db.query(
+      `INSERT INTO form_submissions (form_id, form_title, data)
+       VALUES ($1, $2, $3) RETURNING *`,
+      [form_id || null, form_title || 'Form', JSON.stringify(data)]
+    );
+    ok(res, rows[0]);
   } catch (e) { next(e); }
 });
 

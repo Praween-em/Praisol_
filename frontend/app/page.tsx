@@ -1,11 +1,12 @@
 'use client';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { isLoggedIn } from '@/lib/auth';
-import { useEffect, useState } from 'react';
 import { 
-  Layers, School, Building2, GraduationCap, Smartphone,
+  School, Building2, GraduationCap, Smartphone,
   Zap, ArrowRight, CheckCircle, Star, ChevronRight
 } from 'lucide-react';
+import { Navbar } from '@/components/Navbar';
 
 export default function Landing() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -40,41 +41,7 @@ export default function Landing() {
           }),
         }}
       />
-      {/* Nav */}
-      <nav style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '1rem 2rem', borderBottom: '1px solid var(--color-border)',
-        position: 'sticky', top: 0, backdropFilter: 'blur(20px)',
-        background: 'rgba(9,9,11,0.85)', zIndex: 50
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: 8,
-            background: 'linear-gradient(135deg, #6366f1, #a855f7)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center'
-          }}>
-            <Layers size={18} color="#fff" />
-          </div>
-          <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>PraiSol</span>
-        </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <Link href="/templates" style={{ color: 'var(--color-muted)', textDecoration: 'none', fontSize: '0.9rem' }}>Templates</Link>
-          {loggedIn ? (
-            <Link href="/dashboard" style={{
-              background: 'var(--color-primary)', color: '#fff', padding: '0.45rem 1.1rem',
-              borderRadius: 8, textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600
-            }}>Dashboard</Link>
-          ) : (
-            <>
-              <Link href="/login" style={{ color: 'var(--color-muted)', textDecoration: 'none', fontSize: '0.9rem' }}>Sign In</Link>
-              <Link href="/playground" style={{
-                background: 'var(--color-primary)', color: '#fff', padding: '0.45rem 1.1rem',
-                borderRadius: 8, textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600
-              }}>Get Started Free</Link>
-            </>
-          )}
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero */}
       <section style={{ textAlign: 'center', padding: '6rem 2rem 4rem', maxWidth: 860, margin: '0 auto' }}>
@@ -250,13 +217,11 @@ export default function Landing() {
         borderTop: '1px solid var(--color-border)', padding: '2rem', textAlign: 'center',
         color: 'var(--color-muted)', fontSize: '0.85rem'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-          <div style={{ width: 24, height: 24, borderRadius: 6, background: 'linear-gradient(135deg, #6366f1, #a855f7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Layers size={13} color="#fff" />
-          </div>
-          <span style={{ fontWeight: 700, color: 'var(--color-text)' }}>PraiSol</span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
+          <img src="/logo.png" alt="PraiSol Logo" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+          <span style={{ fontWeight: 700, color: 'var(--color-text)', fontSize: '1.1rem' }}>PraiSol</span>
         </div>
-        <p>© 2024 PraiSol. Build freely. Grow confidently.</p>
+        <p>© 2026 PraiSol. Build freely. Grow confidently.</p>
       </footer>
     </div>
   );
