@@ -58,6 +58,11 @@ export const metadata: Metadata = {
       },
     ],
   },
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
   twitter: {
     card: 'summary_large_image',
     title: 'PraiSol — Build & Deploy School, College & Business Websites',
