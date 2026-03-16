@@ -22,13 +22,25 @@ router.post('/', async (req, res, next) => {
     if (!deployment_id || !['apk', 'aab'].includes(build_type))
       return badRequest(res, 'deployment_id and build_type (apk|aab) are required');
 
+    // 1. Verify deployment ownership
+    const { rows: depRows } = await pool.query(
+      `SELECT * FROM deployments WHERE id = $1 AND user_id = $2`,
+      [deployment_id, req.user.id]
+    );
+    if (!depRows[0]) return badRequest(res, 'Invalid deployment');
+    const deployment = depRows[0];
+
+    // 2. Queue the build
     const { rows } = await pool.query(
       `INSERT INTO app_builds (deployment_id, build_type, app_name, app_version, status)
        VALUES ($1, $2, $3, $4, 'queued') RETURNING *`,
       [deployment_id, build_type, app_name || 'My App', app_version || '1.0.0']
     );
 
-    // TODO: trigger EAS Build via background job
+    // 3. Trigger simulated EAS Build in background
+    const { triggerBuild } = require('../../services/buildService');
+    triggerBuild(rows[0], deployment);
+
     ok(res, { message: 'Build queued', build: rows[0] });
   } catch (e) { next(e); }
 });

@@ -513,6 +513,41 @@ export const COMPONENT_REGISTRY: Record<string, ComponentRegistryItem> = {
       { key: 'title', label: 'Section Title', type: 'text' },
     ],
   },
+  
+  FixedText: {
+    category: 'Content',
+    label: 'Fixed/Floating Text',
+    defaultProps: {
+      text: 'Floating Text',
+      fontSize: '1rem',
+      fontWeight: 'normal',
+      color: '#ffffff',
+      align: 'left',
+      top: '',
+      bottom: '20px',
+      left: '',
+      right: '20px',
+      zIndex: 10,
+      backgroundColor: 'transparent',
+      padding: '10px',
+      borderRadius: '8px',
+    },
+    propSchema: [
+      { key: 'text', label: 'Text Content', type: 'text' },
+      { key: 'fontSize', label: 'Font Size', type: 'text' },
+      { key: 'fontWeight', label: 'Font Weight', type: 'select', options: [{ label: 'Normal', value: 'normal'}, { label: 'Medium', value: 'medium'}, { label: 'Semibold', value: 'semibold'}, { label: 'Bold', value: 'bold'}] },
+      { key: 'color', label: 'Text Color', type: 'color' },
+      { key: 'align', label: 'Text Alignment', type: 'select', options: [{ label: 'Left', value: 'left'}, { label: 'Center', value: 'center'}, { label: 'Right', value: 'right'}] },
+      { key: 'top', label: 'Top Position', type: 'text' },
+      { key: 'bottom', label: 'Bottom Position', type: 'text' },
+      { key: 'left', label: 'Left Position', type: 'text' },
+      { key: 'right', label: 'Right Position', type: 'text' },
+      { key: 'zIndex', label: 'Z-Index (Layer)', type: 'number' },
+      { key: 'backgroundColor', label: 'Background Color', type: 'color' },
+      { key: 'padding', label: 'Padding', type: 'text' },
+      { key: 'borderRadius', label: 'Border Radius', type: 'text' },
+    ],
+  },
 
   // --- NEW COMPONENTS ---
   TeamGrid: {

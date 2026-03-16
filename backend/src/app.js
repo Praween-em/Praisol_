@@ -85,6 +85,44 @@ app.get('/resolve-domain', async (req, res) => {
   }
 });
 
+// Caddy On-Demand TLS validation endpoint
+// Caddy will "ask" this endpoint if it should issue an SSL cert for a domain
+app.get('/validate-domain', async (req, res) => {
+  try {
+    const { pool } = require('./db');
+    const domain = (req.query.domain || '').toLowerCase();
+    
+    if (!domain) return res.status(400).send();
+
+    // 1. Allow main platform domains
+    const platformDomains = ['praisol.online', 'www.praisol.online', 'api.praisol.online'];
+    if (platformDomains.includes(domain)) return res.status(200).send();
+
+    // 2. Check if it's a valid subdomain (slug.praisol.online)
+    if (domain.endsWith('.praisol.online')) {
+      const slug = domain.replace('.praisol.online', '');
+      const { rows } = await pool.query(
+        "SELECT 1 FROM public.deployments WHERE slug = $1 AND status != 'deleted' LIMIT 1",
+        [slug]
+      );
+      if (rows.length > 0) return res.status(200).send();
+    }
+
+    // 3. Check if it's a valid custom domain
+    const { rows: customRows } = await pool.query(
+      "SELECT 1 FROM public.deployments WHERE LOWER(custom_domain) = $1 AND status != 'deleted' LIMIT 1",
+      [domain]
+    );
+    if (customRows.length > 0) return res.status(200).send();
+
+    // Otherwise, reject
+    return res.status(404).send();
+  } catch (err) {
+    console.error('[Caddy-Validate] Error:', err);
+    return res.status(500).send();
+  }
+});
+
 // 404
 app.use((req, res) => res.status(404).json({ success: false, message: 'Route not found' }));
 

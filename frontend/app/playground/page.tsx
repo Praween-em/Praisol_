@@ -40,6 +40,7 @@ export default function PlaygroundPage() {
 
   const [activeTab, setActiveTab] = useState<'components' | 'pages'>('components');
   const [newPageName, setNewPageName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleCreatePage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -201,28 +202,59 @@ export default function PlaygroundPage() {
 
             <div className="flex-1 overflow-y-auto p-3 custom-scrollbar">
               {activeTab === 'components' ? (
-                <div className="space-y-6">
-                  {['Sections', 'Content', 'E-commerce', 'Basics'].map((cat) => (
-                    <div key={cat}>
-                      <h3 className="text-[10px] font-bold text-zinc-600 uppercase mb-3 px-2">{cat}</h3>
-                      <div className="grid grid-cols-1 gap-1">
-                        {Object.entries(COMPONENT_REGISTRY)
-                          .filter(([_, item]) => item.category === cat)
-                          .map(([key, item]) => (
-                            <button
-                              key={key}
-                              onClick={() => addComponent(key)}
-                              className="flex items-center gap-3 w-full p-2.5 rounded-lg text-left text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 transition-all group"
-                            >
-                              <div className="w-8 h-8 rounded-md bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover:border-indigo-500/50 transition-colors">
-                                <Box size={16} className="group-hover:text-indigo-400 transition-colors" />
-                              </div>
-                              <span className="text-sm font-medium">{item.label}</span>
-                            </button>
-                        ))}
-                      </div>
+                <div className="space-y-4">
+                  <div className="sticky top-0 bg-zinc-950 pb-2 z-10">
+                    <div className="relative">
+                      <input 
+                        type="text" 
+                        placeholder="Search components..."
+                        className="w-full bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-zinc-300 px-3 py-2 outline-none focus:border-indigo-500 transition-colors placeholder:text-zinc-600"
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)}
+                      />
+                      {searchQuery && (
+                        <button 
+                          onClick={() => setSearchQuery('')}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300"
+                        >
+                          <X size={12} />
+                        </button>
+                      )}
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="space-y-6">
+                    {['Sections', 'Content', 'E-commerce', 'Basics'].map((cat) => {
+                      const filteredComponents = Object.entries(COMPONENT_REGISTRY)
+                        .filter(([_, item]) => item.category === cat)
+                        .filter(([key, item]) => 
+                          item.label.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          key.toLowerCase().includes(searchQuery.toLowerCase())
+                        );
+
+                      if (filteredComponents.length === 0) return null;
+
+                      return (
+                        <div key={cat}>
+                          <h3 className="text-[10px] font-bold text-zinc-600 uppercase mb-3 px-2">{cat}</h3>
+                          <div className="grid grid-cols-1 gap-1">
+                            {filteredComponents.map(([key, item]) => (
+                                <button
+                                  key={key}
+                                  onClick={() => addComponent(key)}
+                                  className="flex items-center gap-3 w-full p-2.5 rounded-lg text-left text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 transition-all group"
+                                >
+                                  <div className="w-8 h-8 rounded-md bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover:border-indigo-500/50 transition-colors">
+                                    <Box size={16} className="group-hover:text-indigo-400 transition-colors" />
+                                  </div>
+                                  <span className="text-sm font-medium">{item.label}</span>
+                                </button>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-4">

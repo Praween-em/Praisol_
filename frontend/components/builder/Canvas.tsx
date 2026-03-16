@@ -30,11 +30,11 @@ export const Canvas = ({
     <BuilderProvider isBuilder={!preview} onNavigate={onNavigate}>
       <div className={`
         flex-1 h-full overflow-y-auto overflow-x-hidden bg-zinc-900/50 relative
-        ${preview ? '' : (viewDevice === 'mobile' ? 'p-0' : 'p-8 md:p-12')}
+        ${preview ? '' : (viewDevice === 'mobile' ? 'p-0 overflow-hidden' : 'p-8 md:p-12 overflow-hidden')}
       `}>
       {/* Canvas Interior */}
       <div className={`
-        mx-auto transition-all duration-500 shadow-2xl relative
+        mx-auto transition-all duration-500 shadow-2xl relative flex flex-col
         ${preview ? 'w-full' : (viewDevice === 'mobile' ? 'w-full bg-zinc-950 min-h-[667px]' : 'w-full max-w-[1200px] border border-zinc-800 rounded-2xl bg-zinc-950 min-h-[800px]')}
       `}>
         {components.length === 0 && !preview && (
@@ -69,7 +69,7 @@ export const Canvas = ({
                 onSelect(comp.id);
               }}
               className={`
-                group relative transition-all duration-200
+                group relative w-full h-full min-h-[50px] transition-all duration-200
                 ${preview ? '' : 'hover:ring-2 hover:ring-indigo-500/30'}
                 ${isSelected && !preview ? 'ring-2 ring-indigo-500 z-10' : ''}
               `}

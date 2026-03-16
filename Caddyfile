@@ -1,0 +1,26 @@
+{
+    # Global options for On-Demand TLS
+    # This fetches SSL certificates for subdomains as they are visited
+    on_demand_tls {
+        ask http://localhost:4000/validate-domain
+    }
+}
+
+# Main Platform & WWW
+praisol.online, www.praisol.online {
+    reverse_proxy localhost:3000
+}
+
+# API Subdomain
+api.praisol.online {
+    reverse_proxy localhost:4000
+}
+
+# Dynamic Subdomains & Custom Domains
+# Handles *.praisol.online and any custom mapped domains
+https:// {
+    tls {
+        on_demand
+    }
+    reverse_proxy localhost:3000
+}

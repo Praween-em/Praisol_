@@ -38,6 +38,7 @@ import StatsCounter from './sections/StatsCounter';
 import Banner from './sections/Banner';
 import LogoCarousel from './sections/LogoCarousel';
 import Footer from './sections/Footer';
+import FixedText from './sections/FixedText';
 
 const COMPONENT_MAP: Record<string, React.FC<any>> = {
   Navbar,
@@ -82,6 +83,7 @@ const COMPONENT_MAP: Record<string, React.FC<any>> = {
   Banner,
   LogoCarousel,
   Footer,
+  FixedText,
 };
 
 interface ComponentRendererProps {
