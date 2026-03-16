@@ -4,6 +4,7 @@ const deploymentRoutes = require('./deployments');
 const buildRoutes = require('./builds');
 const uploadRoutes = require('./upload');
 const paymentRoutes = require('./payment');
+const careerRoutes = require('./career');
 const authMiddleware = require('../../middleware/auth');
 
 // Auth (public — no JWT needed)
@@ -14,5 +15,6 @@ router.use('/deployments', authMiddleware, deploymentRoutes);
 router.use('/builds', authMiddleware, buildRoutes);
 router.use('/upload', uploadRoutes);
 router.use('/payment', paymentRoutes);
+router.use('/career', careerRoutes);
 
 module.exports = router;

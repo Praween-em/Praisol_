@@ -23,10 +23,10 @@ export default function ContactPage() {
 
             <div className="space-y-8">
               {[
-                { icon: <Mail />, title: 'Email Us', value: 'hello@praisol.online', sub: 'We reply within 24 hours' },
-                { icon: <Phone />, title: 'Call Us', value: '+91 98765 43210', sub: 'Mon-Fri, 10am-6pm IST' },
-                { icon: <MessageCircle />, title: 'WhatsApp', value: '+91 98765 43210', sub: 'Instant support for Pro users' },
-                { icon: <MapPin />, title: 'Office', value: 'MP Nagar, Zone 2, Bhopal', sub: 'Madhya Pradesh, India' },
+                { icon: <Mail />, title: 'Email Us', value: 'info.praisol@gmail.com', sub: 'We reply within 24 hours' },
+                { icon: <Phone />, title: 'Call Us', value: '+91 8374950475', sub: 'Mon-Fri, 10am-6pm IST' },
+                { icon: <MessageCircle />, title: 'WhatsApp', value: '+91 8374950475', sub: 'Instant support for Pro users' },
+                { icon: <MapPin />, title: 'Office', value: 'Anantapur, Andhra Pradesh', sub: 'India' },
               ].map((item, i) => (
                 <div key={i} className="flex gap-6">
                   <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-indigo-400 shrink-0">

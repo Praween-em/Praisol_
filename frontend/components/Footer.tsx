@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { 
-  Mail, Phone, MapPin, Twitter, Github, Linkedin, 
-  Instagram, School, GraduationCap, Building2, Smartphone 
+import {
+  Mail, Phone, MapPin, Twitter, Github, Linkedin,
+  Instagram, School, GraduationCap, Building2, Smartphone
 } from 'lucide-react';
 
 export function Footer() {
@@ -13,10 +13,10 @@ export function Footer() {
         {/* Brand Section */}
         <div className="space-y-6">
           <Link href="/" className="flex items-center gap-2.5 group w-fit">
-            <img 
-              src="/logo.png" 
-              alt="PraiSol Logo" 
-              className="w-10 h-10 object-contain transition-transform group-hover:scale-110" 
+            <img
+              src="/logo.png"
+              alt="PraiSol Logo"
+              className="w-10 h-10 object-contain transition-transform group-hover:scale-110"
             />
             <span className="font-extrabold text-2xl tracking-tight text-white">
               PraiSol
@@ -28,15 +28,15 @@ export function Footer() {
           <div className="space-y-3">
             <div className="flex items-center gap-3 text-sm hover:text-white transition-colors cursor-default">
               <Mail size={18} className="text-indigo-500" />
-              <span>support@praisol.online</span>
+              <span>info.praisol@gmail.com</span>
             </div>
             <div className="flex items-center gap-3 text-sm hover:text-white transition-colors cursor-default">
               <Phone size={18} className="text-indigo-500" />
-              <span>+91 98765 43210</span>
+              <span>+91 8374950475</span>
             </div>
             <div className="flex items-center gap-3 text-sm hover:text-white transition-colors cursor-default">
               <MapPin size={18} className="text-indigo-500" />
-              <span>Bhopal, India</span>
+              <span>Anantapur, Andhra Pradesh, India</span>
             </div>
           </div>
         </div>
@@ -99,7 +99,7 @@ export function Footer() {
             </li>
             <li>
               <Link href="/careers" className="hover:text-white transition-colors flex items-center gap-2">
-                Careers 
+                Careers
                 <span className="bg-indigo-500/10 text-indigo-400 text-[10px] px-2 py-0.5 rounded-full border border-indigo-500/20 font-bold uppercase transition-colors group-hover:bg-indigo-500/20">Hiring</span>
               </Link>
             </li>
@@ -118,7 +118,7 @@ export function Footer() {
 
       <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-zinc-800/50 flex flex-col md:flex-row justify-between items-center gap-6 text-sm">
         <p>© 2026 PraiSol. All rights reserved. Built with ❤️ for Bharat.</p>
-        
+
         <div className="flex items-center gap-6">
           <Link href="https://twitter.com/praisol" className="hover:text-white transition-colors" aria-label="Twitter">
             <Twitter size={20} />

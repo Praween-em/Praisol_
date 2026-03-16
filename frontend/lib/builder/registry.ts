@@ -438,8 +438,8 @@ export const COMPONENT_REGISTRY: Record<string, ComponentRegistryItem> = {
     defaultProps: {
       title: 'Get in Touch',
       email: 'contact@example.online',
-      phone: '+91 98765 43210',
-      address: '123 Business Way, City, State',
+      phone: '+91 8374950475',
+      address: 'Anantapur, Andhra Pradesh, India',
       showForm: true,
     },
     propSchema: [

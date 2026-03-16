@@ -11,9 +11,9 @@ interface ContactSectionProps {
 
 export default function ContactSection({
   title = 'Get in Touch',
-  email = 'contact@example.online',
-  phone = '+91 98765 43210',
-  address = '123 Business Way, City, State',
+  email = 'info.praisol@gmail.com',
+  phone = '+91 8374950475',
+  address = 'Anantapur, Andhra Pradesh, India',
   showForm = true,
 }: ContactSectionProps) {
   return (

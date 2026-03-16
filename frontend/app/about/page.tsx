@@ -44,7 +44,7 @@ export default function AboutPage() {
           </div>
           <h2 className="text-3xl font-bold mb-6 relative z-10">Born in Bharat, Built for the World</h2>
           <p className="text-zinc-400 max-w-3xl mx-auto leading-relaxed relative z-10 mb-8">
-            Starting from a small vision in Bhopal, PraiSol has grown into a powerful platform 
+            Starting from a small vision in Anantapur, PraiSol has grown into a powerful platform 
             supporting hundreds of schools and businesses. We believe that technology should 
             be an enabler, not a barrier.
           </p>
