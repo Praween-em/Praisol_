@@ -50,17 +50,40 @@ export default function PlaygroundPage() {
     setActiveTab('pages');
   };
 
-  // Load from localStorage on mount
+  // Load from template or localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (saved) {
-      try {
-        setConfig(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to parse saved config');
+    const searchParams = new window.URLSearchParams(window.location.search);
+    const templateId = searchParams.get('template');
+
+    if (templateId) {
+      // Use dynamic import to avoid potential circularity issues at top level
+      import('@/lib/builder/templates').then((m) => {
+        const template = m.getTemplateById(templateId);
+        if (template) {
+          setConfig(JSON.parse(JSON.stringify(template.config))); // Deep clone
+          // Clear param from URL without reloading
+          const url = new URL(window.location.href);
+          url.searchParams.delete('template');
+          window.history.replaceState({}, '', url.pathname);
+          
+          // Switch to first page
+          if (template.config.pages.length > 0) {
+            setActivePageId(template.config.pages[0].id);
+            setActiveTab('pages');
+          }
+        }
+      });
+    } else {
+      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (saved) {
+        try {
+          setConfig(JSON.parse(saved));
+        } catch (e) {
+          console.error('Failed to parse saved config');
+        }
       }
     }
-  }, [setConfig]);
+  }, [setConfig, setActivePageId]);
 
   // Save to localStorage on change
   useEffect(() => {
@@ -311,6 +334,7 @@ export default function PlaygroundPage() {
               onNavigate={setActivePageId}
               viewDevice={viewDevice}
               preview={previewMode}
+              globalSettings={config.globalSettings}
             />
           </div>
         </main>

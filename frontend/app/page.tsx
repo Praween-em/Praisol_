@@ -7,10 +7,35 @@ import {
   Zap, ArrowRight, CheckCircle, Star, ChevronRight
 } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
+import { Footer } from '@/components/Footer';
+import { useRazorpay } from '@/lib/useRazorpay';
 
 export default function Landing() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const { processPayment, loading: paymentLoading } = useRazorpay();
+
   useEffect(() => { setLoggedIn(isLoggedIn()); }, []);
+
+  const handleSubscribe = (plan: any) => {
+    // For demonstration, we'll use a fixed amount of ₹1 for testing
+    // In production, this would be plan.price converted to number
+    const testAmount = 1; 
+    
+    processPayment(
+      {
+        amount: testAmount,
+        planId: plan.name,
+      },
+      (res) => {
+        alert(`Payment successful! Welcome to the ${plan.name} plan.`);
+        console.log('Payment success:', res);
+      },
+      (err) => {
+        alert(`Payment failed: ${err}`);
+        console.error('Payment error:', err);
+      }
+    );
+  };
 
   return (
     <div style={{ background: 'var(--color-bg)', minHeight: '100vh', color: 'var(--color-text)' }}>
@@ -202,27 +227,33 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-              <Link href="/playground" style={{
-                display: 'block', textAlign: 'center', textDecoration: 'none',
-                background: p.highlight ? 'linear-gradient(135deg, #6366f1, #a855f7)' : 'var(--color-surface-3)',
-                color: '#fff', padding: '0.7rem', borderRadius: 8, fontWeight: 600, fontSize: '0.9rem'
-              }}>Get Started</Link>
+              <button
+                onClick={() => handleSubscribe(p)}
+                disabled={paymentLoading}
+                style={{
+                  width: '100%',
+                  border: 'none',
+                  display: 'block',
+                  textAlign: 'center',
+                  textDecoration: 'none',
+                  background: p.highlight ? 'linear-gradient(135deg, #6366f1, #a855f7)' : 'var(--color-surface-3)',
+                  color: '#fff',
+                  padding: '0.7rem',
+                  borderRadius: 8,
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  cursor: paymentLoading ? 'not-allowed' : 'pointer',
+                  opacity: paymentLoading ? 0.7 : 1
+                }}
+              >
+                {paymentLoading ? 'Processing...' : 'Get Started'}
+              </button>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Footer */}
-      <footer style={{
-        borderTop: '1px solid var(--color-border)', padding: '2rem', textAlign: 'center',
-        color: 'var(--color-muted)', fontSize: '0.85rem'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
-          <img src="/logo.png" alt="PraiSol Logo" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-          <span style={{ fontWeight: 700, color: 'var(--color-text)', fontSize: '1.1rem' }}>PraiSol</span>
-        </div>
-        <p>© 2026 PraiSol. Build freely. Grow confidently.</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -24,7 +24,7 @@ export default function DeploymentDetail() {
     // Fetch unread form submission count for this tenant
     api.get('/admin/form-submissions/unread-count', {
       headers: { 'X-Tenant-ID': slug }
-    }).then(r => setUnreadCount(r.data.data?.count || 0)).catch(() => {});
+    }).then(r => setUnreadCount(r.data.data?.count || 0)).catch(() => { });
   }, [slug]);
 
   const copySlug = () => {
@@ -47,21 +47,21 @@ export default function DeploymentDetail() {
   const actions = [
     { href: `/dashboard/deployments/${slug}/builder`, icon: <Palette size={22} />, color: '#6366f1', label: 'Visual Builder', desc: 'Customize your site layout and content' },
     { href: `/dashboard/builds?site=${slug}`, icon: <Smartphone size={22} />, color: '#a855f7', label: 'Android App', desc: 'Build and export your mobile app' },
-    { 
-      href: process.env.NODE_ENV === 'development' 
-        ? `http://${slug}.localhost:3000` 
-        : `https://${slug}.praisol.online`, 
-      icon: <Globe size={22} />, 
-      color: '#22c55e', 
-      label: 'View Live Site', 
-      desc: 'Open your deployed website', 
-      external: true 
+    {
+      href: process.env.NODE_ENV === 'development'
+        ? `http://${slug}.localhost:3000`
+        : `https://${slug}.praisol.online`,
+      icon: <Globe size={22} />,
+      color: '#22c55e',
+      label: 'View Live Site',
+      desc: 'Open your deployed website',
+      external: true
     },
-    { 
-      href: `/dashboard/deployments/${slug}/submissions`, 
-      icon: <Inbox size={22} />, 
-      color: '#f59e0b', 
-      label: 'Form Submissions', 
+    {
+      href: `/dashboard/deployments/${slug}/submissions`,
+      icon: <Inbox size={22} />,
+      color: '#f59e0b',
+      label: 'Form Submissions',
       desc: 'View contact & inquiry messages',
       badge: unreadCount > 0 ? unreadCount : undefined
     },
@@ -111,18 +111,18 @@ export default function DeploymentDetail() {
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = a.color; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--color-border)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}>
-              {(a as any).badge != null && (
-                <span style={{
-                  position: 'absolute', top: 12, right: 12,
-                  background: '#ef4444', color: '#fff', borderRadius: 999,
-                  fontSize: '0.7rem', fontWeight: 700, padding: '1px 7px', lineHeight: '18px'
-                }}>{(a as any).badge}</span>
-              )}
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: `${a.color}18`, border: `1px solid ${a.color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: a.color, marginBottom: '0.75rem' }}>
-                {a.icon}
-              </div>
-              <div style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '0.25rem', color: 'var(--color-text)' }}>{a.label}</div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--color-muted)' }}>{a.desc}</div>
+            {(a as any).badge != null && (
+              <span style={{
+                position: 'absolute', top: 12, right: 12,
+                background: '#ef4444', color: '#fff', borderRadius: 999,
+                fontSize: '0.7rem', fontWeight: 700, padding: '1px 7px', lineHeight: '18px'
+              }}>{(a as any).badge}</span>
+            )}
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: `${a.color}18`, border: `1px solid ${a.color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: a.color, marginBottom: '0.75rem' }}>
+              {a.icon}
+            </div>
+            <div style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '0.25rem', color: 'var(--color-text)' }}>{a.label}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--color-muted)' }}>{a.desc}</div>
           </a>
         ))}
       </div>

@@ -7,9 +7,9 @@ import { COMPONENT_REGISTRY } from '@/lib/builder/registry';
 import { Canvas } from '@/components/builder/Canvas';
 import { PropertyPanel } from '@/components/builder/PropertyPanel';
 import api from '@/lib/api';
-import { 
-  ArrowLeft, Monitor, Smartphone, Globe, CheckCircle, 
-  ChevronRight, Box, Type, Image, LayoutGrid, Layers, Loader2, Trash2, Save 
+import {
+  ArrowLeft, Monitor, Smartphone, Globe, CheckCircle,
+  ChevronRight, Box, Type, Image, LayoutGrid, Layers, Loader2, Trash2, Save
 } from 'lucide-react';
 
 export default function BuilderPage() {
@@ -18,19 +18,19 @@ export default function BuilderPage() {
   const [saving, setSaving] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
   const [viewDevice, setViewDevice] = useState<'desktop' | 'mobile'>('desktop');
-  
+
   const [deploymentId, setDeploymentId] = useState<string | null>(null);
-  
-  const { 
-    config, 
-    activePage, 
+
+  const {
+    config,
+    activePage,
     activePageId,
     setActivePageId,
-    selectedComponentId, 
+    selectedComponentId,
     setSelectedComponentId,
-    addComponent, 
-    updateComponentProps, 
-    removeComponent, 
+    addComponent,
+    updateComponentProps,
+    removeComponent,
     moveComponent,
     addPage,
     deletePage,
@@ -66,8 +66,8 @@ export default function BuilderPage() {
     if (!deploymentId) return;
     setSaving(true);
     try {
-      await api.put(`/platform/deployments/${deploymentId}/builder-config`, { 
-        builder_config: config 
+      await api.put(`/platform/deployments/${deploymentId}/builder-config`, {
+        builder_config: config
       });
       // Optionally show a success toast here
     } catch (error) {
@@ -88,7 +88,7 @@ export default function BuilderPage() {
           <div className="h-6 w-[1px] bg-zinc-800" />
           <div>
             <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">{slug}</span>
-            <select 
+            <select
               className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-xs font-bold text-zinc-400 outline-none hover:text-white cursor-pointer ml-2"
               value={activePageId}
               onChange={(e) => setActivePageId(e.target.value)}
@@ -102,13 +102,13 @@ export default function BuilderPage() {
 
         {/* Device Toggles */}
         <div className="flex items-center bg-zinc-800/50 p-1 rounded-lg border border-zinc-700/50">
-          <button 
+          <button
             onClick={() => { setViewDevice('desktop'); setPreviewMode(false); }}
             className={`p-1.5 rounded-md transition-all ${viewDevice === 'desktop' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-zinc-500 hover:text-zinc-300'}`}
           >
             <Monitor size={16} />
           </button>
-          <button 
+          <button
             onClick={() => { setViewDevice('mobile'); setPreviewMode(false); }}
             className={`p-1.5 rounded-md transition-all ${viewDevice === 'mobile' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-zinc-500 hover:text-zinc-300'}`}
           >
@@ -117,14 +117,14 @@ export default function BuilderPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <button 
+          <button
             onClick={() => setPreviewMode(!previewMode)}
             className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold transition-all border ${previewMode ? 'bg-zinc-100 text-zinc-900 border-zinc-100' : 'text-zinc-400 border-zinc-700 hover:border-zinc-500'}`}
           >
             <Globe size={16} />
             {previewMode ? 'Exit Preview' : 'Live Preview'}
           </button>
-          <button 
+          <button
             onClick={handleSave}
             disabled={saving}
             className="flex items-center gap-2 px-6 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg text-sm font-bold transition-all shadow-lg shadow-indigo-500/20"
@@ -140,13 +140,13 @@ export default function BuilderPage() {
         {!previewMode && (
           <aside className="w-64 border-r border-zinc-800 bg-zinc-950 flex flex-col shrink-0">
             <div className="flex border-b border-zinc-900">
-              <button 
+              <button
                 onClick={() => setActiveTab('components')}
                 className={`flex-1 py-3 text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'components' ? 'text-indigo-400 border-b-2 border-indigo-400 bg-indigo-400/5' : 'text-zinc-500 hover:text-zinc-300'}`}
               >
                 Components
               </button>
-              <button 
+              <button
                 onClick={() => setActiveTab('pages')}
                 className={`flex-1 py-3 text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'pages' ? 'text-indigo-400 border-b-2 border-indigo-400 bg-indigo-400/5' : 'text-zinc-500 hover:text-zinc-300'}`}
               >
@@ -174,7 +174,7 @@ export default function BuilderPage() {
                               </div>
                               <span className="text-sm font-medium">{item.label}</span>
                             </button>
-                        ))}
+                          ))}
                       </div>
                     </div>
                   ))}
@@ -182,8 +182,8 @@ export default function BuilderPage() {
               ) : (
                 <div className="space-y-4">
                   <form onSubmit={handleCreatePage} className="flex gap-2 p-1.5 bg-zinc-900 rounded-lg border border-zinc-800">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="Page Name..."
                       className="flex-1 bg-transparent border-none text-xs text-zinc-300 outline-none px-1"
                       value={newPageName}
@@ -193,17 +193,17 @@ export default function BuilderPage() {
                       <Save size={12} />
                     </button>
                   </form>
-                  
+
                   <div className="space-y-1">
                     {config.pages.map(p => (
-                      <div 
+                      <div
                         key={p.id}
                         className={`group flex items-center justify-between p-2.5 rounded-lg cursor-pointer transition-all ${activePageId === p.id ? 'bg-indigo-600/10 border border-indigo-600/30 text-indigo-400' : 'hover:bg-zinc-900 text-zinc-500 hover:text-zinc-400 border border-transparent'}`}
                         onClick={() => setActivePageId(p.id)}
                       >
                         <span className="text-xs font-semibold">{p.label}</span>
                         {config.pages.length > 1 && (
-                          <button 
+                          <button
                             onClick={(e) => { e.stopPropagation(); deletePage(p.id); }}
                             className="p-1 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
                           >
@@ -225,7 +225,7 @@ export default function BuilderPage() {
                 h-full w-full mx-auto transition-all duration-500
                 ${viewDevice === 'mobile' ? 'max-w-[375px] my-10 rounded-[3rem] border-[12px] border-zinc-800 shadow-2xl overflow-hidden' : 'w-full'}
               `}>
-            <Canvas 
+            <Canvas
               components={activePage.components}
               selectedId={selectedComponentId}
               onSelect={setSelectedComponentId}
@@ -234,6 +234,7 @@ export default function BuilderPage() {
               onNavigate={setActivePageId}
               viewDevice={viewDevice}
               preview={previewMode}
+              globalSettings={config.globalSettings}
             />
           </div>
         </main>
@@ -241,7 +242,7 @@ export default function BuilderPage() {
         {/* Right Panel - Properties */}
         {!previewMode && (
           <aside className="w-80 border-l border-zinc-800 bg-zinc-950 shrink-0">
-            <PropertyPanel 
+            <PropertyPanel
               selectedId={selectedComponentId}
               components={activePage.components}
               pages={config.pages.map(p => ({ id: p.id, label: p.label }))}

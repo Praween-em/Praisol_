@@ -14,6 +14,7 @@ interface CanvasProps {
   onNavigate?: (href: string) => void;
   preview?: boolean;
   viewDevice?: 'desktop' | 'mobile';
+  globalSettings?: Record<string, any>;
 }
 
 export const Canvas = ({
@@ -25,11 +26,20 @@ export const Canvas = ({
   onNavigate,
   preview = false,
   viewDevice = 'desktop',
+  globalSettings = {},
 }: CanvasProps) => {
+  const cssVars = {
+    '--color-primary': globalSettings.primaryColor || '#6366f1',
+    '--color-primary-glow': `${globalSettings.primaryColor || '#6366f1'}33`,
+    '--font-main': globalSettings.fontFamily === 'serif' ? 'Georgia, serif' : 'Inter, sans-serif',
+  } as React.CSSProperties;
+
   return (
     <BuilderProvider isBuilder={!preview} onNavigate={onNavigate}>
-      <div className={`
-        flex-1 h-full overflow-y-auto overflow-x-hidden bg-zinc-900/50 relative
+      <div 
+        style={cssVars}
+        className={`
+          flex-1 h-full overflow-y-auto overflow-x-hidden bg-zinc-900/50 relative font-[family-name:var(--font-main)]
         ${preview ? '' : (viewDevice === 'mobile' ? 'p-0 overflow-hidden' : 'p-8 md:p-12 overflow-hidden')}
       `}>
       {/* Canvas Interior */}
