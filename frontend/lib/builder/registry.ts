@@ -246,12 +246,13 @@ export const COMPONENT_REGISTRY: Record<string, ComponentRegistryItem> = {
   HeroTemplate: {
     category: 'Sections',
     label: 'Advanced: Hero Layout',
-    defaultProps: { title: 'Hero Headline', alignment: 'left' },
+    defaultProps: { title: 'Hero Headline', alignment: 'left', ctaText: 'Get Started', ctaLink: '#' },
     propSchema: [
       { key: 'title', label: 'Headline', type: 'text' },
       { key: 'description', label: 'Description', type: 'text' },
+      { key: 'ctaText', label: 'Button Text', type: 'text' },
+      { key: 'ctaLink', label: 'Button Link / Page', type: 'text' },
       { key: 'image', label: 'Hero Image', type: 'image' },
-      { key: 'badge', label: 'Badge Text', type: 'text' },
       { key: 'alignment', label: 'Alignment', type: 'select', options: [{label: 'Left', value: 'left'}, {label: 'Center', value: 'center'}] },
     ],
   },
@@ -262,6 +263,7 @@ export const COMPONENT_REGISTRY: Record<string, ComponentRegistryItem> = {
     label: 'Navigation Bar',
     defaultProps: {
       logoText: 'PraiSol',
+      logoImage: '',
       links: [
         { label: 'Home', href: '/' },
         { label: 'About', href: '/about' },
@@ -274,7 +276,8 @@ export const COMPONENT_REGISTRY: Record<string, ComponentRegistryItem> = {
       sticky: true,
     },
     propSchema: [
-      { key: 'logoText', label: 'Logo Text', type: 'text' },
+      { key: 'logoImage', label: 'Logo Image (Upload or URL)', type: 'image' },
+      { key: 'logoText', label: 'Logo Text / Brand Name', type: 'text' },
       { key: 'links', label: 'Navigation Links', type: 'list' },
       { key: 'showCTA', label: 'Show CTA Button', type: 'boolean' },
       { key: 'ctaLabel', label: 'CTA Label', type: 'text' },

@@ -3,12 +3,10 @@ import { useEffect, useState } from 'react';
 import { useParams as useNextParams } from 'next/navigation';
 import axios from 'axios';
 import { ComponentRenderer } from '@/components/builder/ComponentRenderer';
-import { Loader2 } from 'lucide-react';
 
-export default function TenantPage() {
-  const params = useNextParams<{ slug: string; page?: string[] }>();
+export default function TenantSubPage() {
+  const params = useNextParams<{ slug: string; page: string[] }>();
   const slug = params.slug;
-  // page[0] is the sub-page slug, e.g. "admissions", "about", "contact"
   const pageSlug = params.page?.[0] || 'home';
 
   const [config, setConfig] = useState<any>(null);
@@ -21,8 +19,7 @@ export default function TenantPage() {
     })
     .then(r => setConfig(r.data.data))
     .catch(e => {
-      console.error('Failed to fetch site config:', e.response?.data || e.message);
-      setError(`Failed to load site configuration (Status: ${e.response?.status || 'network'}).`);
+      setError(`Failed to load (Status: ${e.response?.status || 'network'}).`);
     })
     .finally(() => setLoading(false));
   }, [slug]);
@@ -31,18 +28,13 @@ export default function TenantPage() {
 
   if (error) return (
     <div style={{ padding: '8rem 2rem', textAlign: 'center', color: '#71717a' }}>
-      <h1 style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '1rem', color: '#fff' }}>404</h1>
-      <p style={{ marginBottom: '2rem' }}>{error}</p>
-      <button onClick={() => window.location.reload()} 
-        style={{ background: '#6366f1', color: '#fff', border: 'none', padding: '0.6rem 1.5rem', borderRadius: 8, fontWeight: 600, cursor: 'pointer' }}>
-        Try Again
-      </button>
+      <h1 style={{ fontSize: '3rem', fontWeight: 800, color: '#fff' }}>Error</h1>
+      <p>{error}</p>
     </div>
   );
 
   const pages: any[] = config?.builder_config?.pages || [];
 
-  // Try to find the requested page by id or slug
   const currentPage =
     pages.find((p: any) => p.id === pageSlug) ||
     pages.find((p: any) => (p.slug || p.id) === pageSlug) ||
@@ -53,8 +45,8 @@ export default function TenantPage() {
   if (components.length === 0) {
     return (
       <div style={{ padding: '8rem 2rem', textAlign: 'center', color: '#71717a' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '1rem', color: '#fff' }}>Page Not Found</h1>
-        <p>The page <strong>{pageSlug}</strong> hasn&apos;t been created yet.</p>
+        <h1 style={{ fontSize: '2rem', fontWeight: 800, color: '#fff' }}>Page Not Found</h1>
+        <p>The page <strong>{pageSlug}</strong> hasn&apos;t been built yet.</p>
       </div>
     );
   }

@@ -2,6 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '../atoms/Button';
+import { useBuilderContext } from '@/lib/builder/BuilderContext';
 
 export interface HeroProps {
   title?: string;
@@ -22,6 +23,15 @@ export const Hero = ({
   secondaryCtaText = 'Learn More',
   secondaryCtaLink = '#',
 }: HeroProps) => {
+  const { onNavigate } = useBuilderContext();
+
+  const handleClick = (e: React.MouseEvent, href: string) => {
+    if (onNavigate && href.startsWith('/')) {
+      e.preventDefault();
+      onNavigate(href.replace('/', ''));
+    }
+  };
+
   return (
     <section className="relative min-h-[500px] flex items-center px-6 py-20 overflow-hidden bg-zinc-950">
       {/* Background Image/Overlay */}
@@ -43,16 +53,18 @@ export const Hero = ({
           {subtitle}
         </p>
         <div className="flex flex-wrap justify-center gap-4 animate-fade-up" style={{ animationDelay: '0.2s' }}>
-          <Link href={ctaLink || '#'}>
+          <Link href={ctaLink || '#'} onClick={(e) => handleClick(e, ctaLink || '#')}>
             <Button size="lg" className="px-10">
               {ctaText}
             </Button>
           </Link>
-          <Link href={secondaryCtaLink || '#'}>
-            <Button variant="outline" size="lg" className="px-10">
-              {secondaryCtaText}
-            </Button>
-          </Link>
+          {secondaryCtaText && (
+            <Link href={secondaryCtaLink || '#'} onClick={(e) => handleClick(e, secondaryCtaLink || '#')}>
+              <Button variant="outline" size="lg" className="px-10">
+                {secondaryCtaText}
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </section>

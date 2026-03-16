@@ -7,6 +7,7 @@ import { ChevronRight } from 'lucide-react';
 
 export interface NavbarProps {
   logoText?: string;
+  logoImage?: string;
   links?: { label: string; href: string }[];
   backgroundColor?: string;
   showCTA?: boolean;
@@ -17,6 +18,7 @@ export interface NavbarProps {
 
 export const Navbar = ({ 
   logoText = 'PraiSol', 
+  logoImage = '',
   links = [], 
   backgroundColor = '#09090b',
   showCTA = true,
@@ -35,6 +37,31 @@ export const Navbar = ({
     setMobileOpen(false);
   };
 
+  const LogoSection = () => (
+    <div className="flex items-center gap-2">
+      {logoImage ? (
+        <img
+          src={logoImage}
+          alt={logoText}
+          className="h-9 w-auto object-contain"
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = 'none';
+          }}
+        />
+      ) : (
+        <>
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+            {logoText[0]}
+          </div>
+          <span className="font-bold text-lg sm:text-xl text-zinc-100">{logoText}</span>
+        </>
+      )}
+      {logoImage && (
+        <span className="font-bold text-lg sm:text-xl text-zinc-100">{logoText}</span>
+      )}
+    </div>
+  );
+
   return (
     <nav 
       style={{ backgroundColor }}
@@ -45,12 +72,7 @@ export const Navbar = ({
     >
       {/* Desktop + Mobile Top Bar */}
       <div className="flex items-center justify-between px-4 sm:px-6 py-4">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
-            {logoText[0]}
-          </div>
-          <span className="font-bold text-lg sm:text-xl text-zinc-100">{logoText}</span>
-        </div>
+        <LogoSection />
         
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
@@ -116,7 +138,7 @@ export const Navbar = ({
           style={{ backgroundColor: '#09090b', borderLeft: '1px solid #27272a' }}
         >
           <div className="flex items-center justify-between p-6 border-b border-zinc-800/50">
-            <span className="font-bold text-lg text-zinc-100">{logoText}</span>
+            <LogoSection />
             <button 
               onClick={() => setMobileOpen(false)}
               className="p-2 text-zinc-400 hover:text-white"
@@ -158,4 +180,3 @@ export const Navbar = ({
     </nav>
   );
 };
-
