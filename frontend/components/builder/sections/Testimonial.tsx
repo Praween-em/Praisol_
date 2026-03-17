@@ -1,8 +1,8 @@
-'use client';
-import React from 'react';
 import { Quote } from 'lucide-react';
+import { EditableText } from '../atoms/EditableText';
 
 interface TestimonialProps {
+  id?: string;
   quote?: string;
   author?: string;
   role?: string;
@@ -10,13 +10,14 @@ interface TestimonialProps {
   backgroundColor?: string;
 }
 
-export default function Testimonial({
+export const Testimonial = ({
+  id = '',
   quote = "PraiSol has completely transformed how we build websites. The speed and flexibility are unmatched.",
   author = "Jane Cooper",
   role = "CEO at TechFlow",
   avatar = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200",
   backgroundColor = '#18181b',
-}: TestimonialProps) {
+}: TestimonialProps) => {
   return (
     <div 
       style={{ backgroundColor }}
@@ -27,7 +28,7 @@ export default function Testimonial({
       </div>
       
       <p className="text-xl md:text-2xl font-medium text-zinc-100 italic mb-8 leading-relaxed">
-        "{quote}"
+        "<EditableText id={id} propKey="quote" value={quote} multiline />"
       </p>
       
       <div className="flex flex-col items-center gap-3">
@@ -37,8 +38,12 @@ export default function Testimonial({
           className="w-14 h-14 rounded-full border-2 border-indigo-500/20 object-cover"
         />
         <div>
-          <h4 className="font-bold text-white text-lg">{author}</h4>
-          <p className="text-zinc-500 text-sm font-medium">{role}</p>
+          <h4 className="font-bold text-white text-lg">
+            <EditableText id={id} propKey="author" value={author} />
+          </h4>
+          <p className="text-zinc-500 text-sm font-medium">
+            <EditableText id={id} propKey="role" value={role} />
+          </p>
         </div>
       </div>
     </div>

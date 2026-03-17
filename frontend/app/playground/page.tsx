@@ -331,6 +331,7 @@ export default function PlaygroundPage() {
               onSelect={setSelectedComponentId}
               onDelete={removeComponent}
               onMove={moveComponent}
+              onUpdate={updateComponentProps}
               onNavigate={setActivePageId}
               viewDevice={viewDevice}
               preview={previewMode}

@@ -11,6 +11,7 @@ const authMiddleware = require('../../middleware/auth');
 router.use('/auth', authRoutes);
 
 // Protected platform routes
+router.use('/dashboard', authMiddleware, require('./dashboard'));
 router.use('/deployments', authMiddleware, deploymentRoutes);
 router.use('/builds', authMiddleware, buildRoutes);
 router.use('/upload', uploadRoutes);

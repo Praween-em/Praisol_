@@ -1,7 +1,15 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 const BASE_URL = 'https://praisol.online';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: '#09090b',
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),

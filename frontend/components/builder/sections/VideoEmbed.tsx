@@ -1,6 +1,7 @@
-'use client';
+import { EditableText } from '../atoms/EditableText';
 
 interface VideoEmbedProps {
+  id?: string;
   title?: string;
   videoUrl?: string;
   aspectRatio?: string;
@@ -20,20 +21,23 @@ function getEmbedUrl(url: string): string {
   return url;
 }
 
-export default function VideoEmbed({
+export const VideoEmbed = ({
+  id = '',
   title = 'Watch Our Story',
   videoUrl = '',
   aspectRatio = '16/9',
   showCaption = true,
   caption = 'See how we are changing education.',
   accentColor = '#6366f1',
-}: VideoEmbedProps) {
+}: VideoEmbedProps) => {
   const embedUrl = getEmbedUrl(videoUrl);
   return (
-    <section style={{ padding: '4rem 2rem', background: 'transparent' }}>
+    <section style={{ padding: '4rem 1.5rem', background: 'transparent' }} className="px-4 sm:px-6">
       <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
         {title && (
-          <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#fff', marginBottom: '2rem' }}>{title}</h2>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.2rem)', fontWeight: 800, color: '#fff', marginBottom: '2rem' }}>
+            <EditableText id={id} propKey="title" value={title} />
+          </h2>
         )}
         <div style={{
           position: 'relative',
@@ -62,7 +66,9 @@ export default function VideoEmbed({
           )}
         </div>
         {showCaption && caption && (
-          <p style={{ color: '#a1a1aa', marginTop: '1.25rem', fontSize: '0.95rem' }}>{caption}</p>
+          <p style={{ color: '#a1a1aa', marginTop: '1.25rem', fontSize: '0.95rem' }}>
+            <EditableText id={id} propKey="caption" value={caption} multiline />
+          </p>
         )}
       </div>
     </section>

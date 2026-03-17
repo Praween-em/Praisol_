@@ -231,6 +231,7 @@ export default function BuilderPage() {
               onSelect={setSelectedComponentId}
               onDelete={removeComponent}
               onMove={moveComponent}
+              onUpdate={updateComponentProps}
               onNavigate={setActivePageId}
               viewDevice={viewDevice}
               preview={previewMode}

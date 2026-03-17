@@ -9,13 +9,13 @@ interface SectionProps {
   children?: React.ReactNode;
 }
 
-export default function Section({
+export const Section = ({
   id,
   backgroundColor = 'transparent',
   paddingTop = '4rem',
   paddingBottom = '4rem',
   children,
-}: SectionProps) {
+}: SectionProps) => {
   return (
     <section 
       id={id}

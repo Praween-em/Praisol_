@@ -55,13 +55,11 @@ export default function Login() {
     (window as any).sendOtp(
       fullPhone,
       (data: any) => {
-        console.log('OTP Sent:', data);
         setStep('otp');
         setLoading(false);
         startTimer();
       },
       (err: any) => {
-        console.error('Send OTP Error:', JSON.stringify(err));
         setError(err?.message || 'Failed to send OTP. Please try again.');
         setLoading(false);
       }
@@ -80,7 +78,6 @@ export default function Login() {
       otp,
       async (result: any) => {
         const tokenString = typeof result === 'object' ? result.message : result;
-        console.log('OTP Verified, token:', tokenString);
         try {
           const { data } = await api.post('/platform/auth/verify-otp', { token: tokenString });
           if (data.success) {
@@ -94,7 +91,6 @@ export default function Login() {
         }
       },
       (err: any) => {
-        console.error('Verify OTP Error:', JSON.stringify(err));
         setError(err?.message || 'Invalid OTP. Please try again.');
         setLoading(false);
       }
@@ -123,8 +119,8 @@ export default function Login() {
             widgetId: "${widgetId}",
             tokenAuth: "${tokenAuth}",
             exposeMethods: true,
-            success: function(data) { console.log('MSG91 success:', data); },
-            failure: function(error) { console.error('MSG91 failure:', JSON.stringify(error)); }
+            success: function(data) { },
+            failure: function(error) { }
           };
         `}
       </Script>
@@ -133,7 +129,6 @@ export default function Login() {
         src="https://verify.msg91.com/otp-provider.js"
         strategy="afterInteractive"
         onLoad={() => {
-          console.log('MSG91 script loaded, initializing...');
           if ((window as any).initSendOTP) {
             (window as any).initSendOTP((window as any).configuration);
             // Poll until sendOtp is actually exposed (initSendOTP is async internally)
@@ -143,11 +138,9 @@ export default function Login() {
               if ((window as any).sendOtp) {
                 clearInterval(check);
                 setWidgetReady(true);
-                console.log('MSG91 widget ready');
               } else if (attempts > 20) {
                 clearInterval(check);
                 setError('OTP service failed to initialize. Check Widget ID and Token Auth in settings.');
-                console.error('window.sendOtp not available after 10s — check tokenAuth and widgetId');
               }
             }, 500);
           } else {

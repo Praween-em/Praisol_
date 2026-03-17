@@ -15,6 +15,7 @@ interface CanvasProps {
   preview?: boolean;
   viewDevice?: 'desktop' | 'mobile';
   globalSettings?: Record<string, any>;
+  onUpdate?: (id: string, props: any) => void;
 }
 
 export const Canvas = ({
@@ -27,6 +28,7 @@ export const Canvas = ({
   preview = false,
   viewDevice = 'desktop',
   globalSettings = {},
+  onUpdate,
 }: CanvasProps) => {
   const cssVars = {
     '--color-primary': globalSettings.primaryColor || '#6366f1',
@@ -35,7 +37,7 @@ export const Canvas = ({
   } as React.CSSProperties;
 
   return (
-    <BuilderProvider isBuilder={!preview} onNavigate={onNavigate}>
+    <BuilderProvider isBuilder={!preview} onNavigate={onNavigate} onUpdate={onUpdate}>
       <div 
         style={cssVars}
         className={`

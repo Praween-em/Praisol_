@@ -14,6 +14,6 @@ const nextConfig: NextConfig = {
     workerThreads: false,
     cpus: 1
   }
-};
+};  
 
 export default nextConfig;

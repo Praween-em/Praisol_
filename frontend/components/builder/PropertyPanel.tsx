@@ -5,6 +5,8 @@ import { Input } from './atoms/Input';
 import { Checkbox } from './atoms/Checkbox';
 import { X, Trash2, ArrowUp, ArrowDown, Image as ImageIcon, Settings2, Move, ChevronDown, ChevronRight } from 'lucide-react';
 import api from '@/lib/api';
+import { useRouter } from 'next/navigation';
+import { isLoggedIn } from '@/lib/auth';
 
 interface PropertyPanelProps {
   selectedId: string | null;
@@ -70,6 +72,7 @@ export const PropertyPanel = ({
   onMove,
   onClose,
 }: PropertyPanelProps) => {
+  const router = useRouter();
   const component = components.find(c => c.id === selectedId);
   
   if (!component) return (
@@ -275,7 +278,13 @@ export const PropertyPanel = ({
                           }}
                         />
                         <button
-                          onClick={() => document.getElementById(`upload-${field.key}`)?.click()}
+                          onClick={() => {
+                            if (!isLoggedIn()) {
+                              router.push('/login');
+                              return;
+                            }
+                            document.getElementById(`upload-${field.key}`)?.click();
+                          }}
                           style={{ width: '100%', padding: '0.55rem', borderRadius: 8, background: '#4f46e5', border: 'none', color: '#fff', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}
                         >
                           <ImageIcon size={13} /> Upload Image
@@ -334,7 +343,7 @@ export const PropertyPanel = ({
                               </div>
                             ))
                           )}
-                          {'href' in item && (
+                          {typeof item === 'object' && item !== null && 'href' in item && (
                             <div>
                               <label style={{ color: '#52525b', fontSize: '0.65rem', fontWeight: 600 }}>Link URL</label>
                               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', marginTop: '0.2rem' }}>

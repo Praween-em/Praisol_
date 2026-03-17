@@ -14,14 +14,14 @@ interface HeroTemplateProps {
   alignment?: 'left' | 'center';
 }
 
-export default function HeroTemplate({
+export const HeroTemplate = ({
   title = "Design your future with speed and precision",
   description = "Join thousands of builders using our platform to launch stunning digital experiences in record time.",
   ctaText = "Get Started",
   ctaLink = "#",
   image = "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200",
   alignment = 'left',
-}: HeroTemplateProps) {
+}: HeroTemplateProps) => {
   const { onNavigate } = useBuilderContext();
   const isCentered = alignment === 'center';
 
@@ -43,7 +43,7 @@ export default function HeroTemplate({
       <div className="container mx-auto px-6 relative z-10">
         <div className={`flex flex-col lg:flex-row items-center gap-16 ${isCentered ? 'items-center' : ''}`}>
           <div className={`flex-1 space-y-8 ${isCentered ? 'max-w-4xl' : ''}`}>
-            <h1 className="text-5xl lg:text-7xl font-extrabold text-white leading-[1.1] tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-extrabold text-white leading-[1.1] tracking-tight">
               {title}
             </h1>
             

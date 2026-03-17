@@ -1,47 +1,53 @@
 'use client';
 import { Navbar } from './sections/Navbar';
+import { NavbarCentered } from './sections/NavbarCentered';
+import { NavbarGlass } from './sections/NavbarGlass';
 import { Hero } from './sections/Hero';
 import { NewsFeed } from './sections/NewsFeed';
 import { ProductGrid } from './sections/ProductGrid';
 import { AccordionSection } from './sections/AccordionSection';
 import { Button } from './sections/Button';
-import StatsBar from './sections/StatsBar';
-import PricingSection from './sections/PricingSection';
-import ContactSection from './sections/ContactSection';
-import GalleryGrid from './sections/GalleryGrid';
-import ProjectGrid from './sections/ProjectGrid';
-import ExperienceTimeline from './sections/ExperienceTimeline';
-import SkillMatrix from './sections/SkillMatrix';
-import Section from './sections/Section';
-import Container from './sections/Container';
-import Grid from './sections/Grid';
-import Column from './sections/Column';
-import Spacer from './sections/Spacer';
-import Heading from './sections/Heading';
-import Paragraph from './sections/Paragraph';
-import List from './sections/List';
-import ImageComponent from './sections/Image';
-import Icon from './sections/Icon';
-import Tabs from './sections/Tabs';
-import Modal from './sections/Modal';
-import Form from './sections/Form';
+import { StatsBar } from './sections/StatsBar';
+import { PricingSection } from './sections/PricingSection';
+import { ContactSection } from './sections/ContactSection';
+import { GalleryGrid } from './sections/GalleryGrid';
+import { ProjectGrid } from './sections/ProjectGrid';
+import { ExperienceTimeline } from './sections/ExperienceTimeline';
+import { SkillMatrix } from './sections/SkillMatrix';
+import { Section } from './sections/Section';
+import { Container } from './sections/Container';
+import { Grid } from './sections/Grid';
+import { Column } from './sections/Column';
+import { Spacer } from './sections/Spacer';
+import { Heading } from './sections/Heading';
+import { Paragraph } from './sections/Paragraph';
+import { List } from './sections/List';
+import { Image } from './sections/Image';
+import { Icon } from './sections/Icon';
+import { Tabs } from './sections/Tabs';
+import { Modal } from './sections/Modal';
+import { Form } from './sections/Form';
 import { FormInput, FormSelect, FormCheckbox, FormSubmit } from './sections/FormElements';
-import Card from './sections/Card';
-import PricingCard from './sections/PricingCard';
-import BlogCard from './sections/BlogCard';
-import Testimonial from './sections/Testimonial';
-import FAQ from './sections/FAQ';
-import HeroTemplate from './sections/HeroTemplate';
-import TeamGrid from './sections/TeamGrid';
-import VideoEmbed from './sections/VideoEmbed';
-import StatsCounter from './sections/StatsCounter';
-import Banner from './sections/Banner';
-import LogoCarousel from './sections/LogoCarousel';
-import Footer from './sections/Footer';
-import FixedText from './sections/FixedText';
+import { Card } from './sections/Card';
+import { PricingCard } from './sections/PricingCard';
+import { BlogCard } from './sections/BlogCard';
+import { Testimonial } from './sections/Testimonial';
+import { FAQ } from './sections/FAQ';
+import { HeroTemplate } from './sections/HeroTemplate';
+import { TeamGrid } from './sections/TeamGrid';
+import { VideoEmbed } from './sections/VideoEmbed';
+import { StatsCounter } from './sections/StatsCounter';
+import { Banner } from './sections/Banner';
+import { LogoCarousel } from './sections/LogoCarousel';
+import { Footer } from './sections/Footer';
+import { FixedText } from './sections/FixedText';
+import { DynamicNotifications } from './sections/DynamicNotifications';
+import { DynamicProductCatalogue } from './sections/DynamicProductCatalogue';
 
 const COMPONENT_MAP: Record<string, React.FC<any>> = {
   Navbar,
+  NavbarCentered,
+  NavbarGlass,
   Hero,
   NewsFeed,
   ProductGrid,
@@ -62,7 +68,7 @@ const COMPONENT_MAP: Record<string, React.FC<any>> = {
   Heading,
   Paragraph,
   List,
-  Image: ImageComponent,
+  Image,
   Icon,
   Tabs,
   Modal,
@@ -84,6 +90,8 @@ const COMPONENT_MAP: Record<string, React.FC<any>> = {
   LogoCarousel,
   Footer,
   FixedText,
+  DynamicNotifications,
+  DynamicProductCatalogue,
 };
 
 interface ComponentRendererProps {
@@ -104,8 +112,12 @@ export const ComponentRenderer = ({ type, props, tenantSlug }: ComponentRenderer
     );
   }
 
-  // Pass tenantSlug and componentId only to Form so it can submit to the backend
-  const extraProps = type === 'Form' ? { tenantSlug, componentId: props.id } : {};
+  // Pass tenantSlug to components that need to fetch from the backend
+  const dynamicTypes = ['Form', 'DynamicNotifications', 'DynamicProductCatalogue'];
+  const extraProps = {
+    ...(dynamicTypes.includes(type) ? { tenantSlug } : {}),
+    id: props.id || 'temp-id' // Ensure id is passed for inline editing
+  };
 
   return <Component {...props} {...extraProps} />;
 };

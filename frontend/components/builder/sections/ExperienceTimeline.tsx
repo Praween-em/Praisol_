@@ -1,5 +1,4 @@
-'use client';
-import React from 'react';
+import { EditableText } from '../atoms/EditableText';
 
 interface ExperienceItem {
   role: string;
@@ -10,25 +9,47 @@ interface ExperienceItem {
 }
 
 interface ExperienceTimelineProps {
+  id?: string;
   title?: string;
   items?: ExperienceItem[];
+  backgroundColor?: string;
+  titleColor?: string;
+  cardBackground?: string;
+  cardBorderColor?: string;
+  accentColor?: string;
+  nodeColor?: string;
+  lineColor?: string;
+  textColor?: string;
+  subtextColor?: string;
+  padding?: string;
 }
 
-export default function ExperienceTimeline({
+export const ExperienceTimeline = ({
+  id = '',
   title = 'Work Experience',
   items = [],
-}: ExperienceTimelineProps) {
+  backgroundColor = '#09090b',
+  titleColor = '#ffffff',
+  cardBackground = '#18181b',
+  cardBorderColor = '#27272a',
+  accentColor = '#6366f1',
+  nodeColor = '#18181b',
+  lineColor = '#27272a',
+  textColor = '#ffffff',
+  subtextColor = '#a1a1aa',
+  padding = '5rem 2rem',
+}: ExperienceTimelineProps) => {
   return (
-    <section style={{ padding: '5rem 2rem', background: '#09090b' }}>
+    <section style={{ padding, background: backgroundColor }}>
       <div style={{ maxWidth: '800px', margin: '0 auto' }}>
         <h2 style={{
           textAlign: 'center',
-          fontSize: 'clamp(1.5rem, 4vw, 2.2rem)',
+          fontSize: 'clamp(1.5rem, 5vw, 2.5rem)',
           fontWeight: 800,
-          color: '#fff',
+          color: titleColor,
           marginBottom: '4rem',
         }}>
-          {title}
+          <EditableText id={id} propKey="title" value={title} />
         </h2>
 
         <div style={{ position: 'relative', paddingLeft: '2rem' }}>
@@ -39,7 +60,7 @@ export default function ExperienceTimeline({
             top: 0,
             bottom: 0,
             width: '2px',
-            background: 'linear-gradient(to bottom, transparent, #27272a 10%, #27272a 90%, transparent)',
+            background: `linear-gradient(to bottom, transparent, ${lineColor} 10%, ${lineColor} 90%, transparent)`,
           }} />
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
@@ -53,17 +74,17 @@ export default function ExperienceTimeline({
                   width: '16px',
                   height: '16px',
                   borderRadius: '50%',
-                  background: item.current ? '#6366f1' : '#18181b',
-                  border: `3px solid ${item.current ? '#818cf8' : '#3f3f46'}`,
+                  background: item.current ? accentColor : nodeColor,
+                  border: `3px solid ${item.current ? '#818cf8' : lineColor}`,
                   zIndex: 2,
-                  boxShadow: item.current ? '0 0 15px rgba(99,102,241,0.5)' : 'none',
+                  boxShadow: item.current ? `0 0 15px ${accentColor}80` : 'none',
                 }} />
 
                 <div style={{
-                  background: '#18181b',
+                  background: cardBackground,
                   borderRadius: '16px',
                   padding: '1.5rem',
-                  border: '1px solid #27272a',
+                  border: `1px solid ${cardBorderColor}`,
                   transition: 'background 0.2s',
                 }}>
                   <div style={{ 
@@ -74,26 +95,26 @@ export default function ExperienceTimeline({
                     gap: '0.5rem',
                     marginBottom: '0.5rem'
                   }}>
-                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff' }}>
-                      {item.role}
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: textColor }}>
+                      <EditableText id={id} propKey={`items.${idx}.role`} value={item.role} />
                     </h3>
                     <span style={{ 
                       fontSize: '0.8rem', 
                       fontWeight: 600, 
-                      color: item.current ? '#818cf8' : '#71717a',
-                      background: item.current ? 'rgba(99,102,241,0.1)' : 'rgba(255,255,255,0.05)',
+                      color: item.current ? '#818cf8' : subtextColor,
+                      background: item.current ? `${accentColor}1a` : 'rgba(255,255,255,0.05)',
                       padding: '0.25rem 0.6rem',
                       borderRadius: '999px'
                     }}>
-                      {item.duration}
+                      <EditableText id={id} propKey={`items.${idx}.duration`} value={item.duration} />
                     </span>
                   </div>
-                  <div style={{ color: '#6366f1', fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.75rem' }}>
-                    {item.company}
+                  <div style={{ color: accentColor, fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.75rem' }}>
+                    <EditableText id={id} propKey={`items.${idx}.company`} value={item.company} />
                   </div>
                   {item.desc && (
-                    <p style={{ color: '#a1a1aa', fontSize: '0.875rem', lineHeight: 1.6 }}>
-                      {item.desc}
+                    <p style={{ color: subtextColor, fontSize: '0.875rem', lineHeight: 1.6 }}>
+                      <EditableText id={id} propKey={`items.${idx}.desc`} value={item.desc} multiline />
                     </p>
                   )}
                 </div>

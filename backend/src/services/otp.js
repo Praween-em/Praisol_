@@ -44,23 +44,19 @@ async function verifyWidgetToken(token) {
   if (!token) throw new Error('Token is required');
 
   const url = 'https://api.msg91.com/api/v5/widget/verifyAccessToken';
-  const FALLBACK_KEY = '479641ACv4HX0B6926b235P1'; // Known working key for verification
   
   async function attempt(key, label) {
-    console.log(`[MSG91] Attempting verification (${label}): ${key.substring(0, 8)}...`);
     const body = { 'authkey': key, 'access-token': token, 'widgetId': widgetId };
     try {
       const resp = await axios.post(url, body, {
         headers: { 'authkey': key, 'Content-Type': 'application/json', 'Accept': 'application/json' }
       });
-      console.log(`[MSG91] Response (${label}): ${JSON.stringify(resp.data)}`);
       if (resp.data?.type === 'success') {
         // MSG91 can return mobile in resp.data.data OR directly in resp.data.message
         return resp.data.data ?? resp.data.message;
       }
       return { error: resp.data?.message || 'Failed', code: resp.data?.code };
     } catch (err) {
-      console.error(`[MSG91] Error (${label}): ${err.message}`);
       if (err.response) return { error: err.response.data?.message || err.message, code: err.response.data?.code };
       return { error: err.message };
     }
@@ -70,9 +66,9 @@ async function verifyWidgetToken(token) {
   let result = await attempt(authKey, 'Primary Key');
   
   // 2. If it's an AuthenticationFailure (201/401), try the fallback key
-  if (result && (result.error === 'AuthenticationFailure' || result.code == '201' || result.code == '401')) {
-    console.log('[MSG91] Primary key failed. Trying fallback key...');
-    result = await attempt(FALLBACK_KEY, 'Fallback Key');
+  const fallbackKey = process.env.MSG91_FALLBACK_KEY;
+  if (fallbackKey && result && (result.error === 'AuthenticationFailure' || result.code == '201' || result.code == '401')) {
+    result = await attempt(fallbackKey, 'Fallback Key');
   }
 
   if (result && !result.error) {

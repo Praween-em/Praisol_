@@ -8,12 +8,12 @@ interface GridProps {
   children?: React.ReactNode;
 }
 
-export default function Grid({
+export const Grid = ({
   columns = 3,
   gap = '1.5rem',
   responsive = true,
   children,
-}: GridProps) {
+}: GridProps) => {
   return (
     <div 
       style={{ 

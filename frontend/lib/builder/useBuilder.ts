@@ -61,9 +61,30 @@ export function useBuilder(initialConfig?: BuilderConfig) {
       ...prev,
       pages: prev.pages.map(p => ({
         ...p,
-        components: p.components.map(c => 
-          c.id === id ? { ...c, props: { ...c.props, ...newProps } } : c
-        )
+        components: p.components.map(c => {
+          if (c.id !== id) return c;
+          
+          const updatedProps = { ...c.props };
+          
+          Object.entries(newProps).forEach(([key, value]) => {
+            if (key.includes('.')) {
+              const path = key.split('.');
+              let current: any = updatedProps;
+              for (let i = 0; i < path.length - 1; i++) {
+                const step = path[i];
+                // Handle array index or object key
+                const nextStep = isNaN(Number(path[i+1])) ? {} : [];
+                current[step] = current[step] ? (Array.isArray(current[step]) ? [...current[step]] : { ...current[step] }) : nextStep;
+                current = current[step];
+              }
+              current[path[path.length - 1]] = value;
+            } else {
+              updatedProps[key] = value;
+            }
+          });
+
+          return { ...c, props: updatedProps };
+        })
       }))
     }));
   }, []);

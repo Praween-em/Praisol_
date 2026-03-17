@@ -1,7 +1,8 @@
-'use client';
 import React from 'react';
+import { EditableText } from '../atoms/EditableText';
 
 interface FormProps {
+  id?: string;
   title?: string;
   description?: string;
   buttonLabel?: string;
@@ -13,7 +14,8 @@ interface FormProps {
   componentId?: string;
 }
 
-export default function FormComponent({
+export const Form = ({
+  id,
   title = 'Get in Touch',
   description = 'Fill out the form below and we will get back to you soon.',
   buttonLabel = 'Send Message',
@@ -21,7 +23,7 @@ export default function FormComponent({
   backgroundColor = '#18181b',
   tenantSlug,
   componentId,
-}: FormProps) {
+}: FormProps) => {
   const [submitted, setSubmitted] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
@@ -30,6 +32,9 @@ export default function FormComponent({
   const emailRef = React.useRef<HTMLInputElement>(null);
   const phoneRef = React.useRef<HTMLInputElement>(null);
   const messageRef = React.useRef<HTMLTextAreaElement>(null);
+
+  // Use id from props or componentId from renderer
+  const effectiveId = id || componentId || '';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +65,7 @@ export default function FormComponent({
             'X-Tenant-ID': tenantSlug,
           },
           body: JSON.stringify({
-            form_id:    componentId || null,
+            form_id:    effectiveId || null,
             form_title: title,
             data,
           }),
@@ -86,11 +91,15 @@ export default function FormComponent({
   return (
     <div 
       style={{ backgroundColor }}
-      className="p-8 rounded-2xl border border-zinc-800 shadow-xl w-full max-w-xl mx-auto"
+      className="p-6 sm:p-8 rounded-2xl border border-zinc-800 shadow-xl w-full max-w-xl mx-auto"
     >
       <div className="mb-8">
-        <h3 className="text-2xl font-bold text-white mb-2">{title}</h3>
-        <p className="text-zinc-500 text-sm">{description}</p>
+        <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">
+          <EditableText id={effectiveId} propKey="title" value={title} />
+        </h3>
+        <p className="text-zinc-500 text-sm">
+          <EditableText id={effectiveId} propKey="description" value={description} multiline />
+        </p>
       </div>
 
       {submitted ? (
@@ -113,7 +122,7 @@ export default function FormComponent({
             />
           </div>
           
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Email</label>
               <input 
@@ -164,7 +173,9 @@ export default function FormComponent({
                 </svg>
                 Sending...
               </>
-            ) : buttonLabel}
+            ) : (
+              <EditableText id={effectiveId} propKey="buttonLabel" value={buttonLabel} />
+            )}
           </button>
         </form>
       )}

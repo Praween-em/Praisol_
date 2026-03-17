@@ -1,4 +1,4 @@
-'use client';
+import { EditableText } from '../atoms/EditableText';
 
 interface LogoItem {
   name: string;
@@ -7,12 +7,14 @@ interface LogoItem {
 }
 
 interface LogoCarouselProps {
+  id?: string;
   title?: string;
   logos?: LogoItem[];
   backgroundColor?: string;
 }
 
-export default function LogoCarousel({
+export const LogoCarousel = ({
+  id = '',
   title = 'Trusted By',
   logos = [
     { name: 'Partner One' },
@@ -22,13 +24,13 @@ export default function LogoCarousel({
     { name: 'Partner Five' },
   ],
   backgroundColor = 'transparent',
-}: LogoCarouselProps) {
+}: LogoCarouselProps) => {
   return (
-    <section style={{ padding: '3rem 2rem', background: backgroundColor }}>
+    <section style={{ padding: '3rem 1rem', background: backgroundColor }} className="px-4 sm:px-6">
       <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
         {title && (
           <p style={{ color: '#52525b', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '2rem' }}>
-            {title}
+            <EditableText id={id} propKey="title" value={title} />
           </p>
         )}
         <div style={{
@@ -53,7 +55,7 @@ export default function LogoCarousel({
                   letterSpacing: '-0.01em',
                   background: 'rgba(255,255,255,0.03)',
                 }}>
-                  {logo.name}
+                  <EditableText id={id} propKey={`logos.${i}.name`} value={logo.name} />
                 </div>
               )}
             </a>

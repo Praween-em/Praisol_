@@ -1,7 +1,8 @@
-'use client';
 import React from 'react';
+import { EditableText } from '../atoms/EditableText';
 
 interface FixedTextProps {
+  id?: string;
   text?: string;
   fontSize?: string;
   fontWeight?: 'normal' | 'medium' | 'semibold' | 'bold';
@@ -17,7 +18,8 @@ interface FixedTextProps {
   borderRadius?: string;
 }
 
-export default function FixedText({
+export const FixedText = ({
+  id = '',
   text = 'Floating Text',
   fontSize = '1rem',
   fontWeight = 'normal',
@@ -31,7 +33,7 @@ export default function FixedText({
   backgroundColor = 'transparent',
   padding = '0',
   borderRadius = '0',
-}: FixedTextProps) {
+}: FixedTextProps) => {
   // Only apply positioning props if they have a value (not empty string)
   const positionStyle: React.CSSProperties = {
     position: 'absolute',
@@ -60,7 +62,7 @@ export default function FixedText({
         (e.g., for selection in the builder) 
       */}
       <span style={{ pointerEvents: 'auto', display: 'inline-block' }}>
-        {text}
+        <EditableText id={id} propKey="text" value={text} multiline />
       </span>
     </div>
   );

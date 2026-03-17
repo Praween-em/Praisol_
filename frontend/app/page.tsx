@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { isLoggedIn } from '@/lib/auth';
 import { 
   School, Building2, GraduationCap, Smartphone,
@@ -11,19 +12,23 @@ import { Footer } from '@/components/Footer';
 import { useRazorpay } from '@/lib/useRazorpay';
 
 export default function Landing() {
+  const router = useRouter();
   const [loggedIn, setLoggedIn] = useState(false);
   const { processPayment, loading: paymentLoading } = useRazorpay();
 
   useEffect(() => { setLoggedIn(isLoggedIn()); }, []);
 
   const handleSubscribe = (plan: any) => {
-    // For demonstration, we'll use a fixed amount of ₹1 for testing
-    // In production, this would be plan.price converted to number
-    const testAmount = 1; 
+    const amount = parseInt(plan.price.replace(/[^\d]/g, '')) || 0;
     
+    if (amount === 0) {
+      router.push('/login?callback=/playground');
+      return;
+    }
+
     processPayment(
       {
-        amount: testAmount,
+        amount,
         planId: plan.name,
       },
       (res) => {

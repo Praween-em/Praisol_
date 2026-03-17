@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 
 interface AccordionItem {
-  title: string;
-  content: string;
+  title: React.ReactNode;
+  content: React.ReactNode;
 }
 
 interface AccordionProps {

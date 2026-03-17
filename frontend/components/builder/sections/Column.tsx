@@ -7,11 +7,11 @@ interface ColumnProps {
   children?: React.ReactNode;
 }
 
-export default function Column({
+export const Column = ({
   span = 1,
   flex = '1',
   children,
-}: ColumnProps) {
+}: ColumnProps) => {
   return (
     <div 
       style={{ 

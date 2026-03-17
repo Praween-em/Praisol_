@@ -1,24 +1,26 @@
-'use client';
-import React from 'react';
+import { EditableText } from '../atoms/EditableText';
 
 interface StatsBarProps {
+  id?: string;
   stats: { label: string; value: string }[];
   backgroundColor?: string;
   textColor?: string;
 }
 
-export default function StatsBar({ 
+export const StatsBar = ({ 
+  id = '',
   stats = [], 
   backgroundColor = '#111827', 
   textColor = '#ffffff' 
-}: StatsBarProps) {
+}: StatsBarProps) => {
   return (
     <section 
       style={{ 
         backgroundColor, 
         color: textColor,
-        padding: '4rem 2rem'
+        padding: '4rem 1.5rem'
       }}
+      className="px-4 sm:px-6"
     >
       <div style={{ 
         maxWidth: '1200px', 
@@ -45,7 +47,7 @@ export default function StatsBar({
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              {stat.value}
+              <EditableText id={id} propKey={`stats.${idx}.value`} value={stat.value} />
             </div>
             <div style={{ 
               fontSize: '1rem', 
@@ -54,7 +56,7 @@ export default function StatsBar({
               textTransform: 'uppercase',
               opacity: 0.8
             }}>
-              {stat.label}
+              <EditableText id={id} propKey={`stats.${idx}.label`} value={stat.label} />
             </div>
           </div>
         ))}

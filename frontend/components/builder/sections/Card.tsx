@@ -9,13 +9,13 @@ interface CardProps {
   hoverEffect?: boolean;
 }
 
-export default function Card({
+export const Card = ({
   children,
   padding = '1.5rem',
   backgroundColor = '#18181b',
   borderRadius = '16px',
   hoverEffect = true,
-}: CardProps) {
+}: CardProps) => {
   return (
     <div 
       className={`

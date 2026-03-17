@@ -10,14 +10,14 @@ interface ImageProps {
   borderRadius?: string;
 }
 
-export default function ImageComponent({
+export const Image = ({
   src = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800',
   alt = 'Image',
   width = '100%',
   height = 'auto',
   objectFit = 'cover',
   borderRadius = '12px',
-}: ImageProps) {
+}: ImageProps) => {
   return (
     <div style={{ 
       width, 

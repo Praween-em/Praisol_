@@ -6,10 +6,10 @@ interface SpacerProps {
   width?: string;
 }
 
-export default function Spacer({
+export const Spacer = ({
   height = '2rem',
   width = '100%',
-}: SpacerProps) {
+}: SpacerProps) => {
   return (
     <div style={{ height, width, flexShrink: 0 }} />
   );

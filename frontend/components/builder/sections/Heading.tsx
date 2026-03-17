@@ -1,7 +1,9 @@
 'use client';
 import React from 'react';
+import { EditableText } from '../atoms/EditableText';
 
 interface HeadingProps {
+  id?: string;
   text?: string;
   level?: 1 | 2 | 3 | 4 | 5 | 6;
   align?: 'left' | 'center' | 'right';
@@ -9,13 +11,14 @@ interface HeadingProps {
   marginBottom?: string;
 }
 
-export default function Heading({
+export const Heading = ({
+  id = '',
   text = 'Your Heading',
   level = 2,
   align = 'left',
   color = '#fff',
   marginBottom = '1rem',
-}: HeadingProps) {
+}: HeadingProps) => {
   const Tag = `h${level}` as any;
   
   const fontSizes = {
@@ -36,7 +39,7 @@ export default function Heading({
       marginBottom,
       lineHeight: 1.2,
     }}>
-      {text}
+      <EditableText id={id} propKey="text" value={text} tagName={Tag} />
     </Tag>
   );
 }

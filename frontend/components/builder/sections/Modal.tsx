@@ -1,20 +1,22 @@
-'use client';
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { EditableText } from '../atoms/EditableText';
 
 interface ModalProps {
+  id?: string;
   triggerText?: string;
   title?: string;
   content?: string;
   buttonVariant?: 'primary' | 'secondary' | 'outline';
 }
 
-export default function Modal({
+export const Modal = ({
+  id = '',
   triggerText = 'Open Modal',
   title = 'Modal Title',
   content = 'This is the modal content. You can use it to display extra information without leaving the page.',
   buttonVariant = 'primary',
-}: ModalProps) {
+}: ModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -29,7 +31,7 @@ export default function Modal({
           ${buttonVariant === 'outline' ? 'border border-zinc-700 text-zinc-300 hover:border-zinc-500' : ''}
         `}
       >
-        {triggerText}
+        <EditableText id={id} propKey="triggerText" value={triggerText} />
       </button>
 
       {/* Modal Overlay */}
@@ -42,7 +44,9 @@ export default function Modal({
           
           <div className="relative w-full max-w-lg bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-6 border-b border-zinc-900">
-              <h3 className="text-xl font-bold text-white">{title}</h3>
+              <h3 className="text-xl font-bold text-white">
+                <EditableText id={id} propKey="title" value={title} />
+              </h3>
               <button 
                 onClick={() => setIsOpen(false)}
                 className="p-1 text-zinc-500 hover:text-white transition-colors"
@@ -52,9 +56,9 @@ export default function Modal({
             </div>
             
             <div className="p-6">
-              <p className="text-zinc-400 leading-relaxed">
-                {content}
-              </p>
+              <div className="text-zinc-400 leading-relaxed">
+                <EditableText id={id} propKey="content" value={content} multiline />
+              </div>
             </div>
             
             <div className="p-6 bg-zinc-900/30 flex justify-end gap-3">

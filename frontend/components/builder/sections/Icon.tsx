@@ -8,11 +8,11 @@ interface IconProps {
   color?: string;
 }
 
-export default function Icon({
+export const Icon = ({
   iconName = 'Star',
   size = 24,
   color = 'currentColor',
-}: IconProps) {
+}: IconProps) => {
   const IconComponent = (LucideIcons as any)[iconName];
 
   if (!IconComponent) {

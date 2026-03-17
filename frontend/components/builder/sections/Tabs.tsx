@@ -1,5 +1,5 @@
-'use client';
 import React, { useState } from 'react';
+import { EditableText } from '../atoms/EditableText';
 
 interface TabItem {
   label: string;
@@ -7,19 +7,21 @@ interface TabItem {
 }
 
 interface TabsProps {
+  id?: string;
   items?: TabItem[];
   activeColor?: string;
   tabStyle?: 'underline' | 'pills';
 }
 
-export default function Tabs({
+export const Tabs = ({
+  id = '',
   items = [
     { label: 'Tab 1', content: 'Content for the first tab. You can customize this in the properties panel.' },
     { label: 'Tab 2', content: 'Content for the second tab. Add more tabs to organize your information.' },
   ],
   activeColor = '#6366f1',
   tabStyle = 'underline',
-}: TabsProps) {
+}: TabsProps) => {
   const [activeIdx, setActiveIdx] = useState(0);
 
   return (
@@ -45,7 +47,7 @@ export default function Tabs({
                   border: `1px solid ${isActive ? activeColor : '#27272a'}`
                 }}
               >
-                {item.label}
+                <EditableText id={id} propKey={`items.${idx}.label`} value={item.label} />
               </button>
             );
           }
@@ -64,7 +66,7 @@ export default function Tabs({
                 marginBottom: '-1px'
               }}
             >
-              {item.label}
+              <EditableText id={id} propKey={`items.${idx}.label`} value={item.label} />
             </button>
           );
         })}
@@ -72,9 +74,9 @@ export default function Tabs({
 
       {/* Tab Content */}
       <div className="min-h-[100px] animate-in fade-in slide-in-from-bottom-2 duration-300">
-        <p className="text-zinc-400 leading-relaxed">
-          {items[activeIdx]?.content}
-        </p>
+        <div className="text-zinc-400 leading-relaxed">
+          <EditableText id={id} propKey={`items.${activeIdx}.content`} value={items[activeIdx]?.content || ''} multiline />
+        </div>
       </div>
     </div>
   );

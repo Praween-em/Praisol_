@@ -3,25 +3,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '../atoms/Button';
 import { useBuilderContext } from '@/lib/builder/BuilderContext';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Menu, X } from 'lucide-react';
 import { EditableText } from '../atoms/EditableText';
+import { NavbarProps } from './Navbar';
 
-export interface NavbarProps {
-  id?: string;
-  logoText?: string;
-  logoImage?: string;
-  logoHeight?: number;
-  links?: { label: string; href: string }[];
-  backgroundColor?: string;
-  linkWeight?: 'normal' | 'medium' | 'semibold' | 'bold';
-  activeColor?: string;
-  showCTA?: boolean;
-  ctaLabel?: string;
-  ctaLink?: string;
-  sticky?: boolean;
-}
-
-export const Navbar = ({ 
+export const NavbarCentered = ({ 
   id = '',
   logoText = 'PraiSol', 
   logoImage = '',
@@ -39,7 +25,6 @@ export const Navbar = ({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Check for mobile during hydration and window resize
   React.useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024);
@@ -65,49 +50,58 @@ export const Navbar = ({
           alt={logoText}
           style={{ height: logoHeight, width: 'auto' }}
           className="object-contain"
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.display = 'none';
-          }}
         />
       ) : (
-        <>
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
-            {logoText[0]}
-          </div>
-          <span className="font-bold text-lg sm:text-xl text-zinc-100">
-            <EditableText id={id} propKey="logoText" value={logoText} />
-          </span>
-        </>
-      )}
-      {logoImage && (
-        <span className="font-bold text-lg sm:text-xl text-zinc-100">
+        <span className="font-bold text-xl text-zinc-100 tracking-tight">
           <EditableText id={id} propKey="logoText" value={logoText} />
         </span>
       )}
     </div>
   );
 
-  const weightClass = {
+  const weightClass = ({
     normal: 'font-normal',
     medium: 'font-medium',
     semibold: 'font-semibold',
     bold: 'font-bold'
-  }[linkWeight];
+  } as any)[linkWeight];
+
+  const midPoint = Math.ceil(links.length / 2);
+  const leftLinks = links.slice(0, midPoint);
+  const rightLinks = links.slice(midPoint);
 
   // --- Sub-Components for Dual View ---
-  
+
   const DesktopView = () => (
-    <div className="hidden lg:flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
-      <LogoSection />
-      
-      <div className="flex items-center gap-8">
-        <div className="flex items-center gap-6">
-          {links.map((link, idx) => (
+    <div className="hidden lg:flex items-center justify-between h-20 px-6 max-w-7xl mx-auto w-full relative">
+      {/* Desktop Left Links */}
+      <div className="flex items-center gap-8 flex-1">
+        {leftLinks.map((link: any, idx: number) => (
+          <Link 
+            key={idx} 
+            href={link.href}
+            onClick={(e) => handleLinkClick(e, link.href)}
+            className={`text-sm ${weightClass} text-zinc-400 hover:text-white transition-colors whitespace-nowrap`}
+          >
+            {link.label}
+          </Link>
+        ))}
+      </div>
+
+      {/* Logo - Centered on Desktop */}
+      <div className="absolute left-1/2 -translate-x-1/2 flex-shrink-0">
+        <LogoSection />
+      </div>
+
+      {/* Desktop Right Links + CTA */}
+      <div className="flex items-center justify-end gap-8 flex-1">
+        <div className="flex items-center gap-8">
+          {rightLinks.map((link: { label: string; href: string }, idx: number) => (
             <Link 
               key={idx} 
               href={link.href}
               onClick={(e) => handleLinkClick(e, link.href)}
-              className={`text-sm ${weightClass} text-zinc-400 hover:text-zinc-100 transition-colors px-1 whitespace-nowrap`}
+              className={`text-sm ${weightClass} text-zinc-400 hover:text-white transition-colors whitespace-nowrap`}
             >
               {link.label}
             </Link>
@@ -115,7 +109,7 @@ export const Navbar = ({
         </div>
         {showCTA && (
           <Link href={ctaLink} onClick={(e) => handleLinkClick(e, ctaLink)}>
-            <Button size="sm">
+            <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700">
               {ctaLabel}
             </Button>
           </Link>
@@ -129,41 +123,34 @@ export const Navbar = ({
       <div className="flex items-center justify-between px-4 py-3 relative z-[101]">
         <LogoSection />
         <button 
-          className="text-zinc-400 hover:text-zinc-100 transition-colors p-2 -mr-2 bg-white/5 rounded-lg active:scale-95 transition-transform"
+          className="p-2 text-zinc-400 hover:text-white bg-white/5 rounded-xl ml-auto active:scale-95 transition-transform"
           onClick={() => setMobileOpen(!mobileOpen)}
         >
-          {mobileOpen ? (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          )}
+          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
+      {/* Mobile Vertical Dropdown */}
       <div 
         className={`overflow-hidden transition-all duration-300 ease-in-out border-t border-white/5 ${mobileOpen ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0'}`}
         style={{ backgroundColor }}
       >
-        <div className="px-5 py-6 space-y-2">
-          {links.map((link, idx) => (
+        <div className="p-6 space-y-2">
+          {links.map((link: { label: string; href: string }, idx: number) => (
             <Link 
               key={idx} 
               href={link.href}
               onClick={(e) => handleLinkClick(e, link.href)}
-              className="block text-lg font-semibold text-zinc-300 hover:text-white py-3 border-b border-white/5 last:border-0 flex items-center justify-between"
+              className="block text-lg font-bold text-zinc-300 hover:text-white py-4 border-b border-white/5 flex items-center justify-between group"
             >
               {link.label}
-              <ChevronRight size={18} className="text-zinc-600" />
+              <ChevronRight className="text-zinc-600 group-hover:text-white transition-all" />
             </Link>
           ))}
           {showCTA && (
             <div className="pt-6">
               <Link href={ctaLink} onClick={(e) => handleLinkClick(e, ctaLink)}>
-                <Button size="lg" className="w-full justify-center shadow-lg">
+                <Button size="lg" className="w-full bg-indigo-600 shadow-lg">
                   {ctaLabel}
                 </Button>
               </Link>
@@ -176,12 +163,10 @@ export const Navbar = ({
 
   return (
     <nav 
-      style={{ 
-        backgroundColor: (sticky && !mobileOpen) ? `${backgroundColor}cc` : backgroundColor 
-      }}
+      style={{ backgroundColor }}
       className={`
         relative z-[100] border-b border-white/5 w-full transition-all duration-300
-        ${sticky ? 'sticky top-0 backdrop-filter backdrop-blur-xl' : ''}
+        ${sticky ? 'sticky top-0 backdrop-filter backdrop-blur-xl bg-opacity-80' : ''}
       `}
     >
       {isMobile ? <MobileView /> : <DesktopView />}

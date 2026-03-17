@@ -4,7 +4,7 @@ const { getTenantDB } = require('../../db/tenant');
 const { generateTokens, verifyRefreshToken } = require('../../services/jwt');
 const { sendOTP, verifyOTP } = require('../../services/otp');
 const { ok, badRequest, unauthorized } = require('../../utils/response');
-const { otpRateLimiter } = require('../../middleware/rateLimit');
+const { otpRateLimiter, authRateLimiter } = require('../../middleware/rateLimit');
 
 // POST /api/admin/auth/send-otp — OTP login for site admin
 router.post('/send-otp', otpRateLimiter, async (req, res, next) => {
@@ -18,7 +18,7 @@ router.post('/send-otp', otpRateLimiter, async (req, res, next) => {
 });
 
 // POST /api/admin/auth/verify-otp
-router.post('/verify-otp', async (req, res, next) => {
+router.post('/verify-otp', authRateLimiter, async (req, res, next) => {
   try {
     const { phone, otp } = req.body;
     if (!phone || !otp) return badRequest(res, 'Phone and OTP required');
@@ -45,7 +45,7 @@ router.post('/verify-otp', async (req, res, next) => {
 });
 
 // POST /api/admin/auth/login — password-based login
-router.post('/login', async (req, res, next) => {
+router.post('/login', authRateLimiter, async (req, res, next) => {
   try {
     const { phone, password } = req.body;
     if (!phone || !password) return badRequest(res, 'Phone and password required');

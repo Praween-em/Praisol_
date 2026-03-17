@@ -1,9 +1,12 @@
 'use client';
 import React from 'react';
 import { Check } from 'lucide-react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { isLoggedIn } from '@/lib/auth';
+import { EditableText } from '../atoms/EditableText';
 
 interface PricingCardProps {
+  id?: string;
   plan?: string;
   price?: string;
   period?: string;
@@ -14,7 +17,8 @@ interface PricingCardProps {
   accentColor?: string;
 }
 
-export default function PricingCard({
+export const PricingCard = ({
+  id = '',
   plan = 'Starter',
   price = '$29',
   period = '/month',
@@ -23,10 +27,12 @@ export default function PricingCard({
   ctaLink = '#',
   isPopular = false,
   accentColor = '#6366f1',
-}: PricingCardProps) {
+}: PricingCardProps) => {
+  const router = useRouter();
   // Safely normalise features — builder might pass a comma-separated string
-  const featureList: string[] = Array.isArray(features)
-    ? features
+  const isFeatureArray = Array.isArray(features);
+  const featureList: string[] = isFeatureArray
+    ? (features as string[])
     : typeof features === 'string'
     ? features.split(',').map((f) => f.trim()).filter(Boolean)
     : [];
@@ -43,10 +49,16 @@ export default function PricingCard({
       )}
       
       <div className="mb-8">
-        <h3 className="text-zinc-400 font-bold uppercase tracking-widest text-xs mb-2">{plan}</h3>
+        <h3 className="text-zinc-400 font-bold uppercase tracking-widest text-xs mb-2">
+          <EditableText id={id} propKey="plan" value={plan} />
+        </h3>
         <div className="flex items-baseline gap-1">
-          <span className="text-4xl font-bold text-white">{price}</span>
-          <span className="text-zinc-500 text-sm">{period}</span>
+          <span className="text-4xl font-bold text-white">
+            <EditableText id={id} propKey="price" value={price} />
+          </span>
+          <span className="text-zinc-500 text-sm">
+            <EditableText id={id} propKey="period" value={period} />
+          </span>
         </div>
       </div>
       
@@ -56,22 +68,31 @@ export default function PricingCard({
             <div className="w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0">
               <Check className="text-green-500" size={12} />
             </div>
-            {feature}
+            {isFeatureArray ? (
+              <EditableText id={id} propKey={`features.${idx}`} value={feature} />
+            ) : (
+              feature
+            )}
           </li>
         ))}
       </ul>
       
-      <Link href={ctaLink || '#'}>
-        <button 
-          style={{ backgroundColor: isPopular ? accentColor : 'transparent' }}
-          className={`
-            w-full py-4 rounded-xl font-bold text-sm transition-all
-            ${isPopular ? 'text-white hover:brightness-110 shadow-lg shadow-indigo-500/20' : 'border border-zinc-700 text-white hover:border-white hover:bg-zinc-800'}
-          `}
-        >
-          {ctaText}
-        </button>
-      </Link>
+      <button 
+        onClick={() => {
+          if (!isLoggedIn()) {
+            router.push('/login');
+            return;
+          }
+          if (ctaLink) router.push(ctaLink);
+        }}
+        style={{ backgroundColor: isPopular ? accentColor : 'transparent' }}
+        className={`
+          w-full py-4 rounded-xl font-bold text-sm transition-all
+          ${isPopular ? 'text-white hover:brightness-110 shadow-lg shadow-indigo-500/20' : 'border border-zinc-700 text-white hover:border-white hover:bg-zinc-800'}
+        `}
+      >
+        <EditableText id={id} propKey="ctaText" value={ctaText} />
+      </button>
     </div>
   );
 }

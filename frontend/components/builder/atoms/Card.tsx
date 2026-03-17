@@ -3,8 +3,8 @@ import React from 'react';
 
 interface CardProps {
   children: React.ReactNode;
-  title?: string;
-  subtitle?: string;
+  title?: React.ReactNode;
+  subtitle?: React.ReactNode;
   image?: string;
   className?: string;
   onClick?: () => void;
@@ -33,7 +33,7 @@ export const Card = ({
         <div className="aspect-video relative overflow-hidden">
           <img 
             src={image} 
-            alt={title || 'Card image'} 
+            alt={typeof title === 'string' ? title : 'Card image'} 
             className="object-cover w-full h-full"
           />
         </div>

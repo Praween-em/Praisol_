@@ -9,13 +9,13 @@ interface ContainerProps {
   children?: React.ReactNode;
 }
 
-export default function Container({
+export const Container = ({
   maxWidth = '1200px',
   paddingLeft = '1rem',
   paddingRight = '1rem',
   centered = true,
   children,
-}: ContainerProps) {
+}: ContainerProps) => {
   return (
     <div 
       style={{ 

@@ -1,41 +1,82 @@
-'use client';
 import React from 'react';
+import { useRouter } from 'next/navigation';
+import { isLoggedIn } from '@/lib/auth';
+import { EditableText } from '../atoms/EditableText';
 
 interface Plan {
   name: string;
   price: string;
   features: string[];
   highlight?: boolean;
+  ctaText?: string;
+  ctaLink?: string;
 }
 
 interface PricingSectionProps {
+  id?: string;
   title?: string;
+  subtitle?: string;
   plans?: Plan[];
+  backgroundColor?: string;
+  cardBackground?: string;
+  cardBorderColor?: string;
+  accentColor?: string;
+  highlightColor?: string;
+  titleColor?: string;
+  subtitleColor?: string;
+  padding?: string;
+  showBadge?: boolean;
 }
 
-export default function PricingSection({
+export const PricingSection = ({
+  id = '',
   title = 'Our Plans',
+  subtitle = 'Choose the plan that fits your needs',
   plans = [],
-}: PricingSectionProps) {
+  backgroundColor = '#09090b',
+  cardBackground = '#18181b',
+  cardBorderColor = '#27272a',
+  accentColor = '#6366f1',
+  highlightColor = 'rgba(99,102,241,0.06)',
+  titleColor = '#ffffff',
+  subtitleColor = '#a1a1aa',
+  padding = '5rem 2rem',
+  showBadge = true,
+}: PricingSectionProps) => {
+  const router = useRouter();
+
+  const handleGetStarted = (plan: Plan) => {
+    if (plan.ctaLink) {
+        window.location.href = plan.ctaLink;
+        return;
+    }
+    if (!isLoggedIn()) {
+      router.push('/login');
+      return;
+    }
+    // Handle authenticated click
+    console.log('User is logged in, proceeding with plan:', plan.name);
+  };
+
   return (
-    <section style={{ padding: '5rem 2rem', background: '#09090b' }}>
+    <section style={{ padding, background: backgroundColor }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
         <h2 style={{
           textAlign: 'center',
           fontSize: 'clamp(1.5rem, 4vw, 2.2rem)',
           fontWeight: 800,
-          color: '#fff',
+          color: titleColor,
           marginBottom: '0.75rem',
         }}>
-          {title}
+          <EditableText id={id} propKey="title" value={title} />
         </h2>
         <p style={{
           textAlign: 'center',
-          color: '#a1a1aa',
+          color: subtitleColor,
           marginBottom: '3rem',
           fontSize: '1rem',
         }}>
-          Choose the plan that fits your needs
+          <EditableText id={id} propKey="subtitle" value={subtitle} multiline />
         </p>
 
         <div style={{
@@ -50,30 +91,25 @@ export default function PricingSection({
                 borderRadius: '16px',
                 padding: '2rem',
                 border: plan.highlight
-                  ? '2px solid #6366f1'
-                  : '1px solid #27272a',
+                  ? `2px solid ${accentColor}`
+                  : `1px solid ${cardBorderColor}`,
                 background: plan.highlight
-                  ? 'rgba(99,102,241,0.06)'
-                  : '#18181b',
+                  ? highlightColor
+                  : cardBackground,
                 position: 'relative',
                 transition: 'transform 0.2s, box-shadow 0.2s',
+                display: 'flex',
+                flexDirection: 'column'
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
+              className="group"
             >
-              {plan.highlight && (
+              {plan.highlight && showBadge && (
                 <div style={{
                   position: 'absolute',
                   top: '-12px',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+                  background: `linear-gradient(135deg, ${accentColor}, #a855f7)`,
                   color: '#fff',
                   fontSize: '0.7rem',
                   fontWeight: 700,
@@ -86,8 +122,8 @@ export default function PricingSection({
                 </div>
               )}
 
-              <p style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '0.25rem' }}>
-                {plan.name}
+              <p style={{ color: subtitleColor, fontSize: '0.9rem', marginBottom: '0.25rem' }}>
+                <EditableText id={id} propKey={`plans.${idx}.name`} value={plan.name} />
               </p>
               <div style={{
                 display: 'flex',
@@ -95,8 +131,8 @@ export default function PricingSection({
                 gap: '0.2rem',
                 marginBottom: '1.5rem',
               }}>
-                <span style={{ fontSize: '2.2rem', fontWeight: 800, color: '#fff' }}>
-                  {plan.price}
+                <span style={{ fontSize: '2.2rem', fontWeight: 800, color: titleColor }}>
+                  <EditableText id={id} propKey={`plans.${idx}.price`} value={plan.price} />
                 </span>
               </div>
 
@@ -107,6 +143,7 @@ export default function PricingSection({
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '0.6rem',
+                flexGrow: 1
               }}>
                 {plan.features.map((f, i) => (
                   <li
@@ -116,16 +153,17 @@ export default function PricingSection({
                       alignItems: 'center',
                       gap: '0.5rem',
                       fontSize: '0.875rem',
-                      color: '#a1a1aa',
+                      color: subtitleColor,
                     }}
                   >
                     <span style={{ color: '#22c55e', fontSize: '1rem' }}>✓</span>
-                    {f}
+                    <EditableText id={id} propKey={`plans.${idx}.features.${i}`} value={f} />
                   </li>
                 ))}
               </ul>
 
               <button
+                onClick={() => handleGetStarted(plan)}
                 style={{
                   width: '100%',
                   padding: '0.75rem',
@@ -135,13 +173,13 @@ export default function PricingSection({
                   fontSize: '0.9rem',
                   cursor: 'pointer',
                   background: plan.highlight
-                    ? 'linear-gradient(135deg, #6366f1, #a855f7)'
+                    ? `linear-gradient(135deg, ${accentColor}, #a855f7)`
                     : '#27272a',
                   color: '#fff',
                   transition: 'opacity 0.2s',
                 }}
               >
-                Get Started
+                <EditableText id={id} propKey={`plans.${idx}.ctaText`} value={plan.ctaText || 'Get Started'} />
               </button>
             </div>
           ))}

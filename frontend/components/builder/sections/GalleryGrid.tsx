@@ -1,5 +1,4 @@
-'use client';
-import React from 'react';
+import { EditableText } from '../atoms/EditableText';
 
 interface GalleryImage {
   url: string;
@@ -7,57 +6,81 @@ interface GalleryImage {
 }
 
 interface GalleryGridProps {
+  id?: string;
   title?: string;
+  subtitle?: string;
+  showSubtitle?: boolean;
   images?: GalleryImage[];
   columns?: number;
+  backgroundColor?: string;
+  titleColor?: string;
+  subtitleColor?: string;
+  borderRadius?: string;
+  aspectRatio?: string;
+  gap?: string;
+  padding?: string;
+  showCaptions?: boolean;
 }
 
-export default function GalleryGrid({
+export const GalleryGrid = ({
+  id = '',
   title = 'Our Gallery',
+  subtitle = 'Explore our moments and memories',
+  showSubtitle = true,
   images = [],
   columns = 3,
-}: GalleryGridProps) {
+  backgroundColor = '#09090b',
+  titleColor = '#ffffff',
+  subtitleColor = '#a1a1aa',
+  borderRadius = '12px',
+  aspectRatio = '4/3',
+  gap = '1rem',
+  padding = '5rem 2rem',
+  showCaptions = true,
+}: GalleryGridProps) => {
   return (
-    <section style={{ padding: '5rem 2rem', background: '#09090b' }}>
+    <section style={{ padding, background: backgroundColor }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <h2 style={{
           textAlign: 'center',
           fontSize: 'clamp(1.5rem, 4vw, 2.2rem)',
           fontWeight: 800,
-          color: '#fff',
+          color: titleColor,
           marginBottom: '0.75rem',
         }}>
-          {title}
+          <EditableText id={id} propKey="title" value={title} />
         </h2>
-        <p style={{
-          textAlign: 'center',
-          color: '#a1a1aa',
-          marginBottom: '3rem',
-          fontSize: '1rem',
-        }}>
-          Explore our moments and memories
-        </p>
+        {showSubtitle && (
+          <p style={{
+            textAlign: 'center',
+            color: subtitleColor,
+            marginBottom: '3rem',
+            fontSize: '1rem',
+          }}>
+            <EditableText id={id} propKey="subtitle" value={subtitle} multiline />
+          </p>
+        )}
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: `repeat(auto-fill, minmax(${Math.max(200, Math.floor(800 / columns))}px, 1fr))`,
-          gap: '1rem',
+          gridTemplateColumns: `repeat(auto-fill, minmax(${Math.max(200, Math.floor(1000 / columns))}px, 1fr))`,
+          gap,
         }}>
           {images.map((img, idx) => (
             <div
               key={idx}
               style={{
                 position: 'relative',
-                borderRadius: '12px',
+                borderRadius,
                 overflow: 'hidden',
-                border: '1px solid #27272a',
-                aspectRatio: '4/3',
-                background: '#18181b',
+                border: '1px solid rgba(255,255,255,0.07)',
+                aspectRatio,
+                background: 'rgba(255,255,255,0.04)',
                 transition: 'transform 0.3s, box-shadow 0.3s',
                 cursor: 'pointer',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.03)';
+                e.currentTarget.style.transform = 'scale(1.02)';
                 e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.5)';
               }}
               onMouseLeave={(e) => {
@@ -92,13 +115,12 @@ export default function GalleryGrid({
                     <path d="M21 15l-5-5L5 21" />
                   </svg>
                   <span style={{ fontSize: '0.8rem' }}>
-                    {img.caption || 'No image'}
+                    <EditableText id={id} propKey={`images.${idx}.caption`} value={img.caption || 'No image'} />
                   </span>
                 </div>
               )}
 
-              {/* Caption overlay */}
-              {img.caption && img.url && (
+              {showCaptions && img.caption && img.url && (
                 <div style={{
                   position: 'absolute',
                   bottom: 0,
@@ -110,7 +132,7 @@ export default function GalleryGrid({
                   fontSize: '0.85rem',
                   fontWeight: 600,
                 }}>
-                  {img.caption}
+                  <EditableText id={id} propKey={`images.${idx}.caption`} value={img.caption} />
                 </div>
               )}
             </div>
